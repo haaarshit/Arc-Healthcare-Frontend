@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
     Card,
     Input,
@@ -6,8 +6,10 @@ import {
     Button,
     Typography,
 } from "@material-tailwind/react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+import { isDoctor, loginDoctorAsync } from '../doctorSlice';
 
 function DoctorLogin() {
     const {
@@ -15,11 +17,18 @@ function DoctorLogin() {
         handleSubmit,
         formState: { errors },
     } = useForm();
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const isDoctorLogin = useSelector(isDoctor)
 
     const onSubmit = (data) => {
         // Handle login logic here (e.g., call an API)
         console.log(data);
+        dispatch(loginDoctorAsync(data)) 
     };
+    useEffect(()=>{
+        if(isDoctorLogin === true) navigate('/')
+    },[isDoctorLogin])
     return (
         <div className='w-full flex items-center justify-center py-2 h-[100vh] bg-gradient-to-r from-[#7371fc] to-blue-500 '>
             <div className="w-[90%] md:w-[400px]  flex-col items-center justify-center bg-gray-100 rounded-[10px]">

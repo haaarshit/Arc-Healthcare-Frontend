@@ -7,6 +7,10 @@ import DoctorLogin from './features/Doctor/Components/DoctorLogin';
 import DoctorRegister from './features/Doctor/Components/DoctorRegister';
 import Home from './features/Home/Home';
 import { DoctorDashBoard } from './features/Doctor/Components/DoctorDashboard';
+import PatientLogin from './features/Patient/Components/PatientLogin';
+import { PatientDashBoard } from './features/Patient/Components/PatientDashboard';
+import DoctorProfileForPatient from './features/Patient/Components/DoctorProfileForPatient';
+import AppointmentDoctor from './features/Doctor/Components/AppointmentDoctor';
 
 
 function App() {
@@ -14,13 +18,21 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route  element={<HomePage />} >
-            <Route path='/' element={<Home/>}/>
-            <Route path='/about' element={<div/>}/>
+          <Route element={<HomePage />} >
+            <Route path='/' element={<Home />} />
+            <Route path='/about' element={<div />} />
           </Route>
+          {/* doctor routes */}
           <Route path='/doctor/login' element={<DoctorLogin />} />
           <Route path='/doctor/register' element={<DoctorRegister />} />
           <Route path='/doctor/dashboard' element={<DoctorDashBoard />} />
+          <Route path='/doctor/:id' element={<DoctorProfileForPatient />} />
+          <Route path='/doctor/appointment/:id' element={<AppointmentDoctor />} />
+          {/* patient routes */}
+          <Route path='/patient/login' element={<PatientLogin />} />
+          {/* 
+          <Route path='/patient/register' element={<DoctorRegister />} />
+          <Route path='/patient/dashboard' element={<PatientDashBoard />} /> */}
         </Routes>
 
       </BrowserRouter>

@@ -1,10 +1,10 @@
 
-import { Typography } from '@material-tailwind/react';
-import React, { useState } from 'react';
+import { Typography, useSelect } from '@material-tailwind/react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
-import { createDoctorAsync } from '../doctorSlice';
-import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { createDoctorAsync, isDoctor, doctorData } from '../doctorSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
@@ -14,54 +14,25 @@ function DoctorRegister() {
   const dispatch = useDispatch()
 
   const { register, handleSubmit, formState: { errors } } = useForm();
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    avatar: "",
-    phone: "",
-    personalInfo: {},
-    address: {},
-    clinicName: "",
-    professionalInfo: {
-      registrationNumber: "",
-      qualifications: [],
-      specializations: [],
-      workExperience: []
-    },
-    availability: {
-      availableDays: [],
-      availableTime: {
-      }
-    },
-    consultationFees: 0,
-    languages: [],
-    reviews: []
-  })
-
-  function imageToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
+  const isDoctorRegistered = useSelector(isDoctor)
+  const doctorInfo = useSelector(doctorData)
+  const navigate = useNavigate()
 
   const onSubmit = async (data) => {
     console.log(data);
     const file = data.avatar[0];
     dispatch(createDoctorAsync(data))
-    const avatarBase64 = await imageToBase64(file)
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      email: data.email,
-      password: data.password,
-      avatar: avatarBase64,
-      professionalInfo: {
-        ...prevFormData.professionalInfo,
-        qualifications: [...prevFormData.professionalInfo.qualifications, data.professionalInfo.qualifications],
-      },
-    }));
+    // const avatarBase64 = await imageToBase64(file)
+    // setFormData((prevFormData) => ({
+    //   ...prevFormData,
+    //   email: data.email,
+    //   password: data.password,
+    //   avatar: avatarBase64,
+    //   professionalInfo: {
+    //     ...prevFormData.professionalInfo,
+    //     qualifications: [...prevFormData.professionalInfo.qualifications, data.professionalInfo.qualifications],
+    //   },
+    // }));
     // console.log(formData);
   };
 
@@ -84,6 +55,14 @@ function DoctorRegister() {
   //     avatar: avatarBase64
   //   }));
   // }
+
+  useEffect(() => {
+    if (isDoctorRegistered === true && doctorData !== null ) {
+      navigate('/')
+
+      console.log("isregistered______________")
+    }
+  }, [isDoctorRegistered])
 
   return (
     <div className="flex flex-col items-center justify-center bg-gray-100 rounded-[10px] py-2 bg-gray-200">
@@ -156,9 +135,7 @@ function DoctorRegister() {
             </Typography>
             <form onSubmit={handleSubmit(onSubmit)} >
               <div className="mb-4">
-                {/* <label htmlFor="email" className="block text-gray-700 md:text-sm text-md font-bold mb-2">
-              Email
-            </label> */}
+      
                 <input
                   placeholder='email'
                   type="email"
@@ -172,9 +149,6 @@ function DoctorRegister() {
                 )}
               </div>
               <div className="mb-6">
-                {/* <label htmlFor="password" className="block text-gray-700 md:text-sm text-md font-bold mb-2">
-              Password
-            </label> */}
                 <input
                   placeholder='Password'
                   type="password"
@@ -188,9 +162,6 @@ function DoctorRegister() {
                 )}
               </div>
               <div className="mb-4">
-                {/* <label htmlFor="phone" className="block text-gray-700 md:text-sm text-md font-bold mb-2">
-              Phone Number
-            </label> */}
                 <input
                   placeholder='Phone'
                   type="tel"
@@ -201,6 +172,32 @@ function DoctorRegister() {
                 />
                 {errors.phone && (
                   <span className="text-red-500 text-sm">{errors.phone.message}</span>
+                )}
+              </div>
+              <div className="mb-4">
+                <input
+                  placeholder='clinic name'
+                  type="tel"
+                  id="phone"
+                  {...register('clinicName', { required: 'clinicName is required' })}
+                  className={`shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''
+                    }`}
+                />
+                {errors.clinicName && (
+                  <span className="text-red-500 text-sm">{errors.clinicName.message}</span>
+                )}
+              </div>
+              <div className="mb-4">
+                <input
+                  placeholder='consultation Fees'
+                  type="tel"
+                  id="phone"
+                  {...register('consultationFees', { required: 'consultation fees is required' })}
+                  className={`shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''
+                    }`}
+                />
+                {errors.consultationFees && (
+                  <span className="text-red-500 text-sm">{errors.consultationFees.message}</span>
                 )}
               </div>
               <div className="mb-4">

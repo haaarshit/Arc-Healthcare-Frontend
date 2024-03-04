@@ -14,9 +14,22 @@ import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { Link } from "react-router-dom";
+import { isDoctor, logoutDoctorAsync } from "../Doctor/doctorSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { isPatient, logoutPatientAsync } from "../Patient/patientSlice";
 function MyNavbar() {
     const [openNav, setOpenNav] = useState(false);
-    const [isLogin, setLogin] = useState(true)
+    const isDoctorLogin = useSelector(isDoctor)
+    const isPatientLogin = useSelector(isPatient)
+    const dispatch = useDispatch()
+    const handleLogout = () => {
+        if (isDoctorLogin) {
+            dispatch(logoutDoctorAsync())
+        }
+        if (isPatientLogin) {
+            dispatch(logoutPatientAsync())
+        }
+    }
 
     React.useEffect(() => {
         window.addEventListener(
@@ -39,17 +52,32 @@ function MyNavbar() {
                     Home
                 </Link>
             </Typography>
-            <Typography
-                as="li"
-                variant="small"
-                color="blue-gray"
-                className="flex  items-center gap-x-2 p-1 font-medium hover:bg-[#7371fc]  rounded-full hover:text-white p-2 duration-200"
-            >
-                <DashboardIcon />
-                <Link  className="flex items-center" to='/doctor/dashboard'>
-                    Dashboard
-                </Link>
-            </Typography>
+            {isDoctorLogin &&
+                <Typography
+                    as="li"
+                    variant="small"
+                    color="blue-gray"
+                    className="flex  items-center gap-x-2 p-1 font-medium hover:bg-[#7371fc]  rounded-full hover:text-white p-2 duration-200"
+                >
+                    <DashboardIcon />
+                    <Link className="flex items-center" to='/doctor/dashboard'>
+                        Dashboard
+                    </Link>
+                </Typography>
+            }
+            {isPatientLogin  &&
+                <Typography
+                    as="li"
+                    variant="small"
+                    color="blue-gray"
+                    className="flex  items-center gap-x-2 p-1 font-medium hover:bg-[#7371fc]  rounded-full hover:text-white p-2 duration-200"
+                >
+                    <DashboardIcon />
+                    <Link className="flex items-center" to='/patient/dashboard'>
+                        Dashboard
+                    </Link>
+                </Typography>
+            }
 
             <Typography
                 as="li"
@@ -79,9 +107,9 @@ function MyNavbar() {
                 </Typography>
                 <div className="hidden lg:block  rounded-full border-[1px] hover:shadow-md px-5">{navList}</div>
                 <div className="flex items-center gap-x-1">
-                    {isLogin ?
+                    {!isDoctorLogin && !isPatientLogin ?
                         <div>
-                            <Link className=" hidden lg:inline-block p-2  hover:bg-[#7371fc]  rounded-full hover:text-white duration-200">
+                            <Link to='/patient/login' className=" hidden lg:inline-block p-2  hover:bg-[#7371fc]  rounded-full hover:text-white duration-200">
                                 User Login <LoginIcon />
                             </Link>
                             <Link to='/doctor/login' className="hidden lg:inline-block p-2  hover:bg-[#7371fc]  rounded-full hover:text-white duration-200">
@@ -89,7 +117,7 @@ function MyNavbar() {
                             </Link>
                         </div>
                         :
-                        <Link className="hidden lg:inline-block p-2  rounded-full hover:bg-[#7371fc]  rounded-full hover:text-white duration-200">
+                        <Link onClick={handleLogout} className="hidden lg:inline-block p-2  rounded-full hover:bg-[#7371fc]  rounded-full hover:text-white duration-200">
                             Logout <LogoutIcon />
                         </Link>
                     }
@@ -137,7 +165,20 @@ function MyNavbar() {
                     {navList}
 
                     <div className="flex items-center gap-x-1">
-                        {isLogin ?
+                        {/* 
+                            <div>
+                                <Link className=" p-2  hover:bg-[#7371fc]  rounded-full hover:text-white duration-200">
+                                    User Login <LoginIcon />
+                                </Link>
+                                <Link to='/doctor/login' className=" p-2 hover:bg-[#7371fc]  rounded-full hover:text-white duration-200">
+                                    Doctor Login <LoginIcon />
+                                </Link>
+                            </div>
+                            :
+                            <Link className=" p-2  rounded-full hover:bg-[#7371fc]  rounded-full hover:text-white duration-200">
+                                Logout <LogoutIcon />
+                            </Link> */}
+                        {!isDoctorLogin ?
                             <div>
                                 <Link className=" p-2  hover:bg-[#7371fc]  rounded-full hover:text-white duration-200">
                                     User Login <LoginIcon />
@@ -151,6 +192,7 @@ function MyNavbar() {
                                 Logout <LogoutIcon />
                             </Link>
                         }
+
 
                     </div>
                 </div>

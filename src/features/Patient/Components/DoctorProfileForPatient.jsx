@@ -1,8 +1,18 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Avatar } from "@material-tailwind/react";
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { doctorProfile, getDoctorProfileAsync } from '../patientSlice';
 
 
 function DoctorProfileForPatient() {
+    const { id } = useParams();
+    console.log(id)
+    const dispatch = useDispatch()
+    const DoctorProfile = useSelector(doctorProfile)
+    useEffect(() => {
+        dispatch(getDoctorProfileAsync(id))
+    }, [])
     return (
         <div>
             <div className="container mx-auto my-5 p-5">

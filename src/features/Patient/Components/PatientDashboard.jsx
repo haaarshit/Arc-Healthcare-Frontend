@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 
-export function userDashBoard() {
+export function PatientDashBoard() {
   return (
     <div>
-
     </div>
   );
 }
