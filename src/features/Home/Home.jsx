@@ -37,7 +37,7 @@ function Home() {
                         <>
                             {/* component */}
                             <div className="">
-                                <div className="flex  bg-white md:h-auto h-[100vh] " >
+                                <div className="flex  bg-white  h-[100vh] " >
                                     <div className="flex items-center text-center lg:text-left px-8 md:px-12 lg:w-1/2">
                                         <div>
                                             <h2 className="text-3xl font-semibold text-gray-800 md:text-4xl">

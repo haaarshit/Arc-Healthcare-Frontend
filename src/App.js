@@ -11,6 +11,7 @@ import PatientLogin from './features/Patient/Components/PatientLogin';
 import { PatientDashBoard } from './features/Patient/Components/PatientDashboard';
 import DoctorProfileForPatient from './features/Patient/Components/DoctorProfileForPatient';
 import AppointmentDoctor from './features/Doctor/Components/AppointmentDoctor';
+import PatientRegister from './features/Patient/Components/PatientRegister';
 
 
 function App() {
@@ -30,8 +31,8 @@ function App() {
           <Route path='/doctor/appointment/:id' element={<AppointmentDoctor />} />
           {/* patient routes */}
           <Route path='/patient/login' element={<PatientLogin />} />
+          <Route path='/patient/register' element={<PatientRegister />} />
           {/* 
-          <Route path='/patient/register' element={<DoctorRegister />} />
           <Route path='/patient/dashboard' element={<PatientDashBoard />} /> */}
         </Routes>
 

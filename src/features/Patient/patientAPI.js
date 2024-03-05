@@ -14,15 +14,6 @@ export function fetchCount(amount = 1) {
 export const createPatient = async (data) => {
   const base64Img = await imageToBase64(data.avatar[0])
 
-  const availableDays = [];
-
-  // Using Object.entries for key-value pairs
-  for (const [day, isAvailable] of Object.entries(data.availability.availableDays)) {
-    if (isAvailable) {
-      availableDays.push(day);
-    }
-  }
-
   return new Promise(async (resolve, reject) => {
     try {
       let formData = {
@@ -87,7 +78,6 @@ export const logoutPatient = async (loginData) => {
   }
   );
 }
-
 
 
 export const getDoctorProfile = async (id) => {
