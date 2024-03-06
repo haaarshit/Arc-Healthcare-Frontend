@@ -97,11 +97,6 @@ function PatientRegister() {
                             </div>
                         </div>
                     </div>
-
-                    {/* </div>
-      </div> */}
-
-                    {/* ---------------------------------------------------------------------- */}
                     <div className="bg-white  rounded-lg px-2 ">
                         <h2 className="md:text-2xl text-3xl text-center font-semibold text-gray-800 mb-4">Register</h2>
                         <Typography color="gray" className="mt-1 font-normal text-center text-gray-400 pb-2">

@@ -16,19 +16,7 @@ import { TextField } from '@mui/material';
 function DoctorRegister() {
   const dispatch = useDispatch()
 
-  const { control, register, handleSubmit, formState: { errors }, setValue } = useForm(
-    // {
-    //   defaultValues: {
-    //     availability: {
-    //       availableTime: {
-    //         startTiming: null,
-    //         endTiming: null,
-    //       }
-    //     }
-
-    //   }
-    // }
-  );
+  const { control, register, handleSubmit, formState: { errors }, setValue } = useForm();
   const isDoctorRegistered = useSelector(isDoctor)
   const doctorInfo = useSelector(doctorData)
   const navigate = useNavigate()
@@ -41,32 +29,12 @@ function DoctorRegister() {
 
   };
 
-  // const addQualification = (data) => {
-  //   setFormData((prevFormData) => ({
-  //     ...prevFormData,
-  //     professionalInfo: {
-  //       ...prevFormData.professionalInfo,
-  //       qualifications: [...prevFormData.professionalInfo.qualifications, data.professionalInfo.qualifications],
-  //     },
-  //   }));
-  // }
-
-  // const handleAvatar = async (avatar) => {
-  //   console.log(avatar)
-  //   const avatarBase64 = await imageToBase64(avatar)
-  //   console.log("Base64 =   " + avatarBase64)
-  //   setFormData((prevFormData) => ({
-  //     ...prevFormData,
-  //     avatar: avatarBase64
-  //   }));
-  // }
-
   useEffect(() => {
-    // if (isDoctorRegistered === true && doctorData !== null) {
-    //   navigate('/')
+    if (isDoctorRegistered === true && doctorData !== null) {
+      navigate('/')
 
-    //   console.log("isregistered______________")
-    // }
+      console.log("isregistered______________")
+    }
   }, [isDoctorRegistered])
 
   return (
@@ -75,7 +43,6 @@ function DoctorRegister() {
 
       {/* ---------------------------------------------------------------------- */}
       {/* component */}
-      {/* This form uses the fabform.io form backend service */}
       <div className=" sm:w-[80%] w-full">
         <div className="grid sm:grid-cols-2  gap-16 p-8 mx-auto w-full  bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] rounded-md text-[#333] ">
           <div>
@@ -128,9 +95,6 @@ function DoctorRegister() {
               </div>
             </div>
           </div>
-
-          {/* </div>
-      </div> */}
 
           {/* ---------------------------------------------------------------------- */}
           <div className="bg-white  rounded-lg px-2 ">
@@ -217,8 +181,6 @@ function DoctorRegister() {
                   {...register('avatar', { required: 'Avatar is required' })}
                   className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''
                     }`}
-                //       class="file:bg-white file:text-gray-500 file:border file:border-gray-300 file:rounded
-                //  file:hover:bg-gray-100 file:focus:bg-white file:focus:border-indigo-500 file:focus:outline-none"
                 />
                 {errors.avatar && (
                   <span className="text-red-500 text-sm">{errors.avatar.message}</span>
@@ -535,10 +497,7 @@ const Availability = ({ register, errors, control, setValue }) => {
     return `${(hr % 12 == 0 ? 12 : hr % 12)}:${mn} ${amPm}`
   }
 
-
-
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const hrs = ['01 AM', '02 AM', '03 AM', '04 AM', '05 AM', '06 AM', '07 AM', '08 AM', '09 AM', '10 AM', '11 AM', '12 AM', '01 PM', '02 PM', '03 PM', '04 PM', '05 PM', '06 PM', '07 PM', '08 PM', '09 PM', '10 PM', '11 PM', '12 PM'];
   return (
     <div className='mb-4'>
 
@@ -554,19 +513,14 @@ const Availability = ({ register, errors, control, setValue }) => {
             {day}
           </label>
         ))}
-
-
       </div>
 
-
-
       <div>
-
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <div className='my-2'>
             <TimePicker
               label="Select Opening Time"
-              renderInput={(params) => <TextField {...params} />} // Customize input (optional)
+              renderInput={(params) => <TextField {...params} />}
               format="hh:mm a"
               onChange={(time) => {
                 const selectedTime = extractTime(time)
@@ -579,7 +533,7 @@ const Availability = ({ register, errors, control, setValue }) => {
           <div className='my-2'>
             <TimePicker
               label="Select Closing Time"
-              renderInput={(params) => <TextField {...params} />} // Customize input (optional)
+              renderInput={(params) => <TextField {...params} />}
               format="hh:mm a"
               onChange={(time) => {
                 const selectedTime = extractTime(time)
