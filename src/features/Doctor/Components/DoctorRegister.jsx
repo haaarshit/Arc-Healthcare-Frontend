@@ -1,7 +1,7 @@
 
 import { Typography, useSelect } from '@material-tailwind/react';
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { createDoctorAsync, isDoctor, doctorData } from '../doctorSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,31 +9,36 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import EmailIcon from '@mui/icons-material/Email';
+import { LocalizationProvider, TimePicker, renderTimeViewClock } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { TextField } from '@mui/material';
 
 function DoctorRegister() {
   const dispatch = useDispatch()
 
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { control, register, handleSubmit, formState: { errors }, setValue } = useForm(
+    // {
+    //   defaultValues: {
+    //     availability: {
+    //       availableTime: {
+    //         startTiming: null,
+    //         endTiming: null,
+    //       }
+    //     }
+
+    //   }
+    // }
+  );
   const isDoctorRegistered = useSelector(isDoctor)
   const doctorInfo = useSelector(doctorData)
   const navigate = useNavigate()
 
+
   const onSubmit = async (data) => {
     console.log(data);
-    const file = data.avatar[0];
+    // const file = data.avatar[0];
     dispatch(createDoctorAsync(data))
-    // const avatarBase64 = await imageToBase64(file)
-    // setFormData((prevFormData) => ({
-    //   ...prevFormData,
-    //   email: data.email,
-    //   password: data.password,
-    //   avatar: avatarBase64,
-    //   professionalInfo: {
-    //     ...prevFormData.professionalInfo,
-    //     qualifications: [...prevFormData.professionalInfo.qualifications, data.professionalInfo.qualifications],
-    //   },
-    // }));
-    // console.log(formData);
+
   };
 
   // const addQualification = (data) => {
@@ -57,11 +62,11 @@ function DoctorRegister() {
   // }
 
   useEffect(() => {
-    if (isDoctorRegistered === true && doctorData !== null ) {
-      navigate('/')
+    // if (isDoctorRegistered === true && doctorData !== null) {
+    //   navigate('/')
 
-      console.log("isregistered______________")
-    }
+    //   console.log("isregistered______________")
+    // }
   }, [isDoctorRegistered])
 
   return (
@@ -135,7 +140,7 @@ function DoctorRegister() {
             </Typography>
             <form onSubmit={handleSubmit(onSubmit)} >
               <div className="mb-4">
-      
+
                 <input
                   placeholder='email'
                   type="email"
@@ -226,7 +231,7 @@ function DoctorRegister() {
               <h1 className="block text-gray-700 md:text-md text-xl font-bold mb-2">Professional Info</h1>
               <ProfessionalInfo register={register} errors={errors} />
               <h1 className="block text-gray-700 md:text-md text-xl font-bold mb-2">Availability</h1>
-              <Availability register={register} errors={errors} />
+              <Availability register={register} errors={errors} control={control} setValue={setValue} />
               <button
                 type="submit"
                 className="my-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 w-full rounded focus:outline-none focus:shadow-outline"
@@ -355,6 +360,10 @@ const Address = ({ register, errors }) => {
 
 // ProfessionalInfo
 const ProfessionalInfo = ({ register, errors }) => {
+  const { control } = useForm()
+  const { fields: qualificationFields, append: qualificationAppend, remove: removeQualification } = useFieldArray({ control, name: 'professionalInfo.qualifications' });
+  const { fields: specializationsFields, append: specializationsAppend, remove: removeSpecialization } = useFieldArray({ control, name: 'professionalInfo.specializations' });
+  const { fields: workExperienceFields, append: workExperienceAppend, remove: removeWorkExperience } = useFieldArray({ control, name: 'professionalInfo.workExperience' });
   return (
     <div className='mb-4'>
       <div className='mb-4'>
@@ -371,95 +380,163 @@ const ProfessionalInfo = ({ register, errors }) => {
       {/* qualification */}
       <h1 className="block text-gray-700 md:text-md text-md font-bold mb-2">Qualification</h1>
       <div className='mb-4'>
-        {/* <label htmlFor="registrationNumber" className="block text-gray-700 md:text-sm text-md font-bold mb-2">Degree:</label> */}
-        <input type="text" placeholder='degree' id="degree" name="professionalInfo.qualifications.degree" {...register('professionalInfo.qualifications.degree', { required: 'degree is required' })}
-          className={`shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''
-            }`}
-        />
-        {errors.professionalInfo && errors.professionalInfo.qualifications && errors.professionalInfo.qualifications.degree && (
-          <span className="text-red-500 text-sm">{errors.professionalInfo.qualifications.degree.message}</span>
-        )}
+        {qualificationFields.map((field, index) => (
+          <div key={field.id} className="flex flex-col space-y-1 border rounded-md p-2">
+            <label htmlFor={field.id} className="text-sm font-medium">
+              Degree:
+            </label>
+            <input
+              {...register(`professionalInfo.qualifications.${index}.degree`)}
+              id={field.id}
+              placeholder="Enter your degree"
+              className="px-3 py-2 rounded-md border focus:outline-none focus:ring-blue-500 focus:ring-1"
+            />
+
+            <label htmlFor={`${field.id}-university`} className="text-sm font-medium">
+              University:
+            </label>
+            <input
+              {...register(`professionalInfo.qualifications.${index}.university`)}
+              id={`${field.id}-university`}
+              placeholder="Enter university name"
+              className="px-3 py-2 rounded-md border focus:outline-none focus:ring-blue-500 focus:ring-1"
+            />
+
+            <label htmlFor={`${field.id}-year`} className="text-sm font-medium">
+              Year of Graduation:
+            </label>
+            <input
+              {...register(`professionalInfo.qualifications.${index}.year`, { value: '', required: 'Year is required' })}
+              type="number"
+              id={`${field.id}-year`}
+              placeholder="Enter graduation year"
+              className="px-3 py-2 rounded-md border focus:outline-none focus:ring-blue-500 focus:ring-1"
+            />
+
+            <button
+              type="button"
+              onClick={() => removeQualification(index)}
+              className="bg-red-500 my-1 text-white p-1 px-2 rounded-[10px]"
+            >
+              Remove Qualification
+            </button>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={() => qualificationAppend({ degree: '', university: '', year: 0 })}
+          className="bg-[#7371fc] text-white px-4 py-2 rounded-md  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-1"
+        >
+          Add Qualification
+        </button>
       </div>
-      <div className='mb-4'>
-        {/* <label htmlFor="registrationNumber" className="block text-gray-700 md:text-sm text-md font-bold mb-2">University Name:</label> */}
-        <input type="text" placeholder='university' id="university" name="professionalInfo.qualifications.university" {...register('professionalInfo.qualifications.university', { required: 'university is required' })}
-          className={`shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''
-            }`}
-        />
-        {errors.professionalInfo && errors.professionalInfo.qualifications && errors.professionalInfo.qualifications.university && (
-          <span className="text-red-500 text-sm">{errors.professionalInfo.qualifications.university.message}</span>
-        )}
-      </div>
-      <div className='mb-4'>
-        {/* <label htmlFor="registrationNumber" className="block text-gray-700 md:text-sm text-md font-bold mb-2">Passing Year:</label> */}
-        <input type="number" placeholder='Passing Year' id="year" name="professionalInfo.qualifications.year" {...register('professionalInfo.qualifications.year', { required: 'Year is required' })}
-          className={`shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''
-            }`}
-        />
-        {errors.professionalInfo && errors.professionalInfo.qualifications && errors.professionalInfo.qualifications.year && (
-          <span className="text-red-500 text-sm">{errors.professionalInfo.qualifications.year.message}</span>
-        )}
-      </div>
-      {/* <button>Add Qualification</button> */}
+
       {/* specialization */}
+
+
       <div className='mb-4'>
-        {/* <label htmlFor="specializations" className="block text-gray-700 md:text-sm text-md font-bold mb-2">Specialization:</label> */}
-        <input type="text" placeholder="Specialization" id="specializations" name="professionalInfo.specializations" {...register('professionalInfo.specializations', { required: 'Year is required' })}
-          className={`shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''
-            }`}
-        />
+
+        {specializationsFields.map((field, index) => (
+
+          <div key={field.id} className="flex flex-col space-y-1 border rounded-md p-2">
+            <input
+
+              {...register(`professionalInfo.specializations.${index}`)}
+              id={`professionalInfo.specializations${field.id}`}
+              placeholder="Enter Specialization"
+              className="px-3 py-2 rounded-md border focus:outline-none focus:ring-blue-500 focus:ring-1"
+            />
+
+
+            <br />
+            <button type="button" className='bg-red-500 my-1 text-white p-1 px-2 rounded-[10px]' onClick={() => removeSpecialization(index)}>
+              Remove Specilization
+            </button>
+          </div>
+        ))}
+        <button type="button" className='bg-[#7371fc] text-white px-4 py-2 rounded-md  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-1' onClick={() => specializationsAppend('')}>
+          Add Specilization
+        </button>
         {errors.professionalInfo && errors.professionalInfo.qualifications && errors.professionalInfo.qualifications.year && (
           <span className="text-red-500 text-sm">{errors.professionalInfo.qualifications.year.message}</span>
         )}
       </div>
+
       {/* work experience */}
       <h1 className="block text-gray-700 md:text-md text-xl font-bold mb-2">Work Experience</h1>
+
       <div className='mb-4'>
-        {/* <label htmlFor="workExperience" className="block text-gray-700 md:text-sm text-md font-bold mb-2">HospitalName:</label> */}
-        <input type="text" placeholder='Hospital Name' id="hospitalName" name="workExperience" {...register('professionalInfo.workExperience.hospitalName', { required: 'Hospital Name is required' })}
-          className={`shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''
-            }`}
-        />
-        {errors.professionalInfo && errors.professionalInfo.workExperience && errors.professionalInfo.workExperience.hospitalName && (
-          <span className="text-red-500 text-sm">{errors.professionalInfo.workExperience.hospitalName.message}</span>
-        )}
+        {workExperienceFields.map((field, index) => (
+          <div key={field.id} className="flex flex-col space-y-1 border rounded-md p-2">
+
+            <input
+              {...register(`professionalInfo.workExperience.${index}.hospitalName`)}
+              id={field.id}
+              placeholder="Enter your degree"
+              className="px-3 py-2 rounded-md border focus:outline-none focus:ring-blue-500 focus:ring-1"
+            />
+
+            <input
+              {...register(`professionalInfo.workExperience.${index}.position`)}
+              id={`${field.id}-position`}
+              placeholder="Enter university name"
+              className="px-3 py-2 rounded-md border focus:outline-none focus:ring-blue-500 focus:ring-1"
+            />
+
+            <label htmlFor={`${field.id}-year`} className="text-sm font-medium">
+              Start Date:
+            </label>
+            <input
+              {...register(`professionalInfo.workExperience.${index}.startDate`, { value: '', required: 'Year is required' })}
+              type="date"
+              id={`${field.id}-startDate`}
+              className="px-3 py-2 rounded-md border focus:outline-none focus:ring-blue-500 focus:ring-1"
+            />
+            <label htmlFor={`${field.id}-year`} className="text-sm font-medium">
+              End Date:
+            </label>
+            <input
+              {...register(`professionalInfo.workExperience.${index}.endDate`)}
+              type="date"
+              id={`${field.id}-endDate`}
+              placeholder="Enter graduation year"
+              className="px-3 py-2 rounded-md border focus:outline-none focus:ring-blue-500 focus:ring-1"
+            />
+
+            <button
+              type="button"
+              onClick={() => removeWorkExperience(index)}
+              className="bg-red-500 my-1 text-white p-1 px-2 rounded-[10px]"
+            >
+              Remove Work Experience
+            </button>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={() => workExperienceAppend({ hospitalName: '', position: '', startDate: null, endDate: null })}
+          className="bg-[#7371fc] text-white px-4 py-2 rounded-md  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-1"
+        >
+          Add Work Experience
+        </button>
       </div>
-      <div className='mb-4'>
-        {/* <label htmlFor="position" className="block text-gray-700 md:text-sm text-md font-bold mb-2">Position:</label> */}
-        <input type="text" placeholder="Position" id="position" name="position" {...register('professionalInfo.workExperience.position', { required: 'Hospital Name is required' })}
-          className={`shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''
-            }`}
-        />
-        {errors.professionalInfo && errors.professionalInfo.workExperience && errors.professionalInfo.workExperience.position && (
-          <span className="text-red-500 text-sm">{errors.professionalInfo.workExperience.position.message}</span>
-        )}
-      </div>
-      <div className='mb-4'>
-        <label htmlFor="startdate" className="block text-gray-700 md:text-sm text-md font-bold mb-2">Start Date:</label>
-        <input type="date" id="startdate" name="startdate" {...register('professionalInfo.workExperience.startDate', { required: 'StartDate is required' })}
-          className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''
-            }`}
-        />
-        {errors.professionalInfo && errors.professionalInfo.workExperience && errors.professionalInfo.workExperience.startDate && (
-          <span className="text-red-500 text-sm">{errors.professionalInfo.workExperience.startDate.message}</span>
-        )}
-      </div>
-      <div className='mb-4'>
-        <label htmlFor="startdate" className="block text-gray-700 md:text-sm text-md font-bold mb-2">End Date:</label>
-        <input type="date" id="startdate" name="startdate" {...register('professionalInfo.workExperience.endDate', { required: 'Hospital Name is required' })}
-          className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''
-            }`}
-        />
-        {errors.professionalInfo && errors.professionalInfo.workExperience && errors.professionalInfo.workExperience.endDate && (
-          <span className="text-red-500 text-sm">{errors.professionalInfo.workExperience.endDate.message}</span>
-        )}
-      </div>
-    </div>
+    </div >
   );
 }
 
 // Avaibility component
-const Availability = ({ register, errors }) => {
+const Availability = ({ register, errors, control, setValue }) => {
+
+  const extractTime = (time) => {
+    const hr = time.hour()
+    const mn = time.minute()
+    console.log(time.toISOString(time))
+    const amPm = hr >= 12 ? 'PM' : 'AM';
+    return `${(hr % 12 == 0 ? 12 : hr % 12)}:${mn} ${amPm}`
+  }
+
+
+
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   const hrs = ['01 AM', '02 AM', '03 AM', '04 AM', '05 AM', '06 AM', '07 AM', '08 AM', '09 AM', '10 AM', '11 AM', '12 AM', '01 PM', '02 PM', '03 PM', '04 PM', '05 PM', '06 PM', '07 PM', '08 PM', '09 PM', '10 PM', '11 PM', '12 PM'];
   return (
@@ -468,48 +545,55 @@ const Availability = ({ register, errors }) => {
       <div className='mb-4'>
         <label htmlFor="street" className="block text-gray-700 md:text-sm text-md font-bold mb-2">Available Days:</label>
         {days.map((day) => (
-          <label key={day} className='mr-1'>
+          <label key={day} className="flex items-center">
             <input
               type="checkbox"
-              {...register(`availability.availableDays.${day}`, { onChange: () => console.log(day) })}
-
+              {...register(`availability.availableDays.${day}`)}
+              className="mr-2 focus:ring-blue-500 focus:ring-2"
             />
             {day}
           </label>
         ))}
+
+
       </div>
+
+
+
       <div>
-        <label htmlFor="city" className="block text-gray-700 md:text-sm text-md font-bold mb-2">Start Timing :</label>
-        <select
-          className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''
-            }`}
-        >
-          {
-            hrs.map((hr) => (
-              <option value={hr} {...register('availability.availableTime.startTime', { required: 'Timing is required' })}>{hr}</option>
-            ))
-          }
-        </select>
-        {errors.availability && errors.availability.availableTime && errors.availability.availableTime.startTime && (
-          <span className="text-red-500 text-sm">{errors.availability.availableTime.startTime.message}</span>
-        )}
+
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <div className='my-2'>
+            <TimePicker
+              label="Select Opening Time"
+              renderInput={(params) => <TextField {...params} />} // Customize input (optional)
+              format="hh:mm a"
+              onChange={(time) => {
+                const selectedTime = extractTime(time)
+                console.log(selectedTime)
+
+                setValue('availability.availableTime.startTime', selectedTime)
+              }}
+            />
+          </div>
+          <div className='my-2'>
+            <TimePicker
+              label="Select Closing Time"
+              renderInput={(params) => <TextField {...params} />} // Customize input (optional)
+              format="hh:mm a"
+              onChange={(time) => {
+                const selectedTime = extractTime(time)
+                console.log(selectedTime)
+
+                setValue('availability.availableTime.endTime', selectedTime)
+              }}
+
+            />
+          </div>
+        </LocalizationProvider>
       </div>
-      <div>
-        <label htmlFor="city" className="block text-gray-700 md:text-sm text-md font-bold mb-2">End Timing :</label>
-        <select
-          className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''
-            }`}
-        >
-          {
-            hrs.map((hr) => (
-              <option value={hr} {...register('availability.availableTime.endTime', { required: 'Timing is required' })}>{hr}</option>
-            ))
-          }
-        </select>
-        {errors.address && errors.address.city && (
-          <span className="text-red-500 text-sm">{errors.address.city.message}</span>
-        )}
-      </div>
+
+
     </div>
   );
 };

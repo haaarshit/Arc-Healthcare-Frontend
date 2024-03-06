@@ -30,9 +30,9 @@ export const createDoctor = async (data) => {
         clinicName: data.clinicName,
         professionalInfo: {
           registrationNumber: data.professionalInfo.registrationNumber,
-          qualifications: [data.professionalInfo.qualifications],
-          specializations: [data.professionalInfo.specializations],
-          workExperience: [data.professionalInfo.workExperience]
+          qualifications: data.professionalInfo.qualifications,
+          specializations: data.professionalInfo.specializations,
+          workExperience: data.professionalInfo.workExperience
         },
         availability: {
           availableDays: availableDays,
@@ -108,7 +108,7 @@ export const fetchDoctorDashboard = async () => {
           host: requestUrl,
           port: 8080
         },
-        withCredentials: true
+        withCredentials: false
       })
       resolve({ data: response.data })
     }

@@ -26,6 +26,15 @@ export const loginPatientAsync = createAsyncThunk(
   }
 );
 
+export const createPatientAsync = createAsyncThunk(
+  'counter/createPatient',
+  async (data) => {
+    const response = await loginPatient(data);
+    return response.data;
+  }
+);
+
+
 export const logoutPatientAsync = createAsyncThunk(
   'doctor/logoutPatient',
   async () => {
