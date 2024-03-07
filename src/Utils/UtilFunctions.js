@@ -34,3 +34,11 @@ export async function setCookie(token,day) {
       reader.readAsDataURL(file);
     });
   }
+
+  export const extractTime = (time) => {
+    const hr = time.hour()
+    const mn = time.minute()
+    console.log(time.toISOString(time))
+    const amPm = hr >= 12 ? 'PM' : 'AM';
+    return `${(hr % 12 == 0 ? 12 : hr % 12)}:${mn} ${amPm}`
+  }

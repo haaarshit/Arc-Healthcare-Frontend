@@ -7,9 +7,17 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import EmailIcon from '@mui/icons-material/Email';
+import { createPatientAsync, isPatient, patientData } from '../patientSlice';
+
 
 function PatientRegister() {
     const { control, register, handleSubmit, formState: { errors } } = useForm();
+
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const patientInfo = useSelector(patientData)
+    const isPatientRegistered = useSelector(isPatient)
+
 
     const { fields: alleryFields, append: alleryAppend, remove: removeAllery } = useFieldArray({ control, name: 'allergies' });
     const { fields: dietFields, append: dietAppend, remove: removeDiet } = useFieldArray({ control, name: 'dietPreferences' });
@@ -27,22 +35,17 @@ function PatientRegister() {
 
     const onSubmit = async (data) => {
         console.log(data);
-        const file = data.avatar[0];
-        console.log(file)
-
-
-        // setFormData((prevFormData) => ({
-        //   ...prevFormData,
-        //   email: data.email,
-        //   password: data.password,
-        //   avatar: avatarBase64,
-        //   professionalInfo: {
-        //     ...prevFormData.professionalInfo,
-        //     qualifications: [...prevFormData.professionalInfo.qualifications, data.professionalInfo.qualifications],
-        //   },
-        // }));
-        // console.log(formData);
+        dispatch(createPatientAsync(data))
     };
+
+    useEffect(() => {
+        if (isPatientRegistered === true && patientInfo !== null) {
+            navigate('/')
+            console.log("isregistered______________")
+        }
+    }, [isPatientRegistered])
+
+
     return (
         <div className="flex flex-col items-center justify-center bg-gray-100 rounded-[10px] py-2 bg-gray-200">
             <div className=" sm:w-[80%] w-full">
@@ -232,11 +235,11 @@ function PatientRegister() {
                             <div className="mb-4">
 
                                 <input
-                                    placeholder='Height in feet'
+                                    placeholder='Height in cm'
                                     type="number"
                                     id="number"
                                     name="file"
-                                    {...register('height', { required: 'Height is required', max: { value: 7, message: "value can't exceed 7" } })}
+                                    {...register('height', { required: 'Height is required'})}
                                     className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''
                                         }`}
                                 />

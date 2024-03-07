@@ -24,16 +24,16 @@ export const createPatient = async (data) => {
         personalInfo: data.personalInfo,
         address: data.address,
         consultationFees: data.consultationFees,
-        allergies:data.allergies,
+        allergies: data.allergies,
         bloodType: data.bloodType,
-        height:data.height,
-        weight:data.weight,
-        dietPreferences:data.dietPreferences
+        height: data.height,
+        weight: data.weight,
+        dietPreferences: data.dietPreferences
       }
 
       console.log("form data => " + JSON.stringify(formData))
 
-      let response = await axios.post(requestUrl + "/api/public/doctor/add", formData, {
+      let response = await axios.post(requestUrl + "/api/public/patient/add", formData, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -71,6 +71,32 @@ export const logoutPatient = async (loginData) => {
     try {
       await setCookie(null, 0)
       resolve({ data: null })
+    }
+    catch (e) {
+      reject(e)
+    }
+  }
+  );
+}
+
+export const fetchPatientDashboard = async () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const token = getCookie('token')
+      const response = await axios.get(requestUrl + "/api/auth/patient/dashboard", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          
+        },
+        proxy: {
+          host: requestUrl,
+          port: 8080
+        },
+        withCredentials: false
+      })
+      resolve({ data: response.data })
     }
     catch (e) {
       reject(e)

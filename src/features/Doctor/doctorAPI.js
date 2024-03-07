@@ -49,6 +49,7 @@ export const createDoctor = async (data) => {
         headers: {
           "Content-Type": "application/json",
         },
+        withCredentials: true
       })
       console.log(response)
       console.log("respone header " + response.headers)
@@ -173,27 +174,28 @@ export const fetchPatientProfile = async (id) => {
 }
 
 export const updateAppointment = async (id, data) => {
-  return new Promise(async (resolve, reject) => {
-    const appointmentData = {
-      startTime: data.startTime,
-      endTime: data.endTime,
-      symptoms: data.symptoms,
-      diagnosis: data.diagnosis,
-      prescription: data.prescription,
-      status: 'completed',
-      notes: data.notes,
-      followUpDate: data.followUpDate,
-      followUpInstructions: data.followUpInstructions,
-      appointmentType: '',
-      prescribedMedications: data.medicines,
-      labTestRequests: data.tests,
-      patientConsent: true,
-    }
-    try {
-      const token = getCookie('token')
-      const response = await axios.get(requestUrl + "/api/auth/doctor//appointment/update/" + id, {
 
-      }, {
+  return new Promise(async (resolve, reject) => {
+
+    try {
+      let appointmentData = {
+        startTime: data.startTime,
+        endTime: data.endTime,
+        symptoms: data.symptoms,
+        diagnosis: data.diagnosis,
+        prescription: data.prescription,
+        status: 'completed',
+        notes: data.notes,
+        followUpDate: data.followUpDate,
+        followUpInstructions: data.followUpInstructions,
+        appointmentType: '',
+        prescribedMedications: data.medicines,
+        labTestRequests: data.tests,
+        patientConsent: true,
+      }
+      console.log(appointmentData)
+      const token = getCookie('token')
+      const response = await axios.put(requestUrl + "/api/auth/doctor/appointment/update/" + id, appointmentData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Access-Control-Allow-Origin': '*',
@@ -202,7 +204,7 @@ export const updateAppointment = async (id, data) => {
           host: requestUrl,
           port: 8080
         },
-        withCredentials: true
+        withCredentials: false
       })
       resolve({ data: response.data })
     }

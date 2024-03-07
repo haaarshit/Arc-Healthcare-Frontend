@@ -12,6 +12,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import { LocalizationProvider, TimePicker, renderTimeViewClock } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { TextField } from '@mui/material';
+import { extractTime } from '../../../Utils/UtilFunctions';
 
 function DoctorRegister() {
   const dispatch = useDispatch()
@@ -30,7 +31,7 @@ function DoctorRegister() {
   };
 
   useEffect(() => {
-    if (isDoctorRegistered === true && doctorData !== null) {
+    if (isDoctorRegistered === true && doctorInfo !== null) {
       navigate('/')
 
       console.log("isregistered______________")
@@ -405,7 +406,7 @@ const ProfessionalInfo = ({ register, errors }) => {
 
               {...register(`professionalInfo.specializations.${index}`)}
               id={`professionalInfo.specializations${field.id}`}
-              placeholder="Enter Specialization"
+              placeholder="Enter Specialization (ex:- Cardiologist)"
               className="px-3 py-2 rounded-md border focus:outline-none focus:ring-blue-500 focus:ring-1"
             />
 
@@ -434,14 +435,14 @@ const ProfessionalInfo = ({ register, errors }) => {
             <input
               {...register(`professionalInfo.workExperience.${index}.hospitalName`)}
               id={field.id}
-              placeholder="Enter your degree"
+              placeholder="Enter hospital name"
               className="px-3 py-2 rounded-md border focus:outline-none focus:ring-blue-500 focus:ring-1"
             />
 
             <input
               {...register(`professionalInfo.workExperience.${index}.position`)}
               id={`${field.id}-position`}
-              placeholder="Enter university name"
+              placeholder="Enter position"
               className="px-3 py-2 rounded-md border focus:outline-none focus:ring-blue-500 focus:ring-1"
             />
 
@@ -489,13 +490,7 @@ const ProfessionalInfo = ({ register, errors }) => {
 // Avaibility component
 const Availability = ({ register, errors, control, setValue }) => {
 
-  const extractTime = (time) => {
-    const hr = time.hour()
-    const mn = time.minute()
-    console.log(time.toISOString(time))
-    const amPm = hr >= 12 ? 'PM' : 'AM';
-    return `${(hr % 12 == 0 ? 12 : hr % 12)}:${mn} ${amPm}`
-  }
+
 
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   return (

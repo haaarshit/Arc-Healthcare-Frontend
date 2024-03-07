@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { doctorDashBoard, getPatientProfileAsync, patientProfile } from '../doctorSlice'
-import { Link, useParams } from 'react-router-dom'
+import { doctorDashBoard, getPatientProfileAsync, patientProfile, updateAppointmentAsync } from '../doctorSlice'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Avatar } from '@material-tailwind/react'
 import { useFieldArray, useForm } from "react-hook-form";
 import ImageModal from '../../../Components/ImageModal'
-// import TimePicker from 'react-time-picker'
+import { extractTime } from '../../../Utils/UtilFunctions'
+
+import { LocalizationProvider, TimePicker, renderTimeViewClock } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { TextField } from '@mui/material';
+
 
 
 
@@ -15,12 +20,14 @@ function AppointmentDoctor() {
     const { id } = useParams()
     const patient = useSelector(patientProfile)
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const [isAvatarModal, setAvatarModal] = useState(false)
 
     const handleClick = () => { setAvatarModal(!isAvatarModal) }
 
     const {
+        setValue,
         control,
         register,
         handleSubmit,
@@ -33,13 +40,13 @@ function AppointmentDoctor() {
         name: 'medicines',
     });
     // manage array of tests
-    const { fields: fileds1, append: append1, remove: remove1 } = useFieldArray({
+    const { fields: fields1, append: append1, remove: remove1 } = useFieldArray({
         control,
         name: 'tests',
     });
 
     const submitHandler = (data) => {
-        // 
+        dispatch(updateAppointmentAsync(appointment.id,data))
         console.log(data)
     }
 
@@ -52,8 +59,16 @@ function AppointmentDoctor() {
         console.log(appointment)
         // fetch the patient of the appointment
         if (appointment.patientId) dispatch(getPatientProfileAsync(appointment.patientId))
-    }, [dispatch, appointment])
 
+        const beforeUnloadListener = (event) => {
+            navigate(-1)
+            // event.preventDefault();
+            // event.returnValue = ""; // Chrome requires a non-empty string as return value
+        };
+        window.addEventListener("beforeunload", beforeUnloadListener);
+
+    
+    }, [dispatch, appointment])
 
 
     return (
@@ -185,7 +200,7 @@ function AppointmentDoctor() {
                                                             {e.appointmentDate}
                                                         </th>
                                                         <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                                            <Link to={`/doctor/appointment/${e.id}`} className='bg-[#7371fc] p-1 rounded-[10px]'>Visit</Link>
+                                                            <Link to={`/doctor/appointment/${e.id}`} className='bg-[#7371fc] p-1 rounded-md'>Visit</Link>
                                                         </td>
                                                         <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                                                             <div className="flex items-center">
@@ -234,37 +249,39 @@ function AppointmentDoctor() {
                                     </div>
                                     <div className="md:flex-1 mt-2 mb:mt-0 md:px-3">
                                         <div className="md:flex mb-4">
-                                            <div className="md:flex-1 md:pr-3">
-                                                <label className="block uppercase tracking-wide text-charcoal-darker text-xs font-bold">
-                                                    Start Time
-                                                </label>
-                                                <input
-                                                    className="w-full shadow-inner p-4 border-0"
-                                                    type="text"
-                                                    {...register("startTime", { required: true })}
-                                                    placeholder="Enter start time of appointment"
-                                                />
-                                                {errors.startTime && <span className="text-xs text-red">{errors.startTime.message}</span>}
-                                            </div>
 
-                                            <div className="md:flex-1 md:pr-3">
-                                                <label className="block uppercase tracking-wide text-charcoal-darker text-xs font-bold">
-                                                    Ending Time
-                                                </label>
-                                                <input
-                                                    className="w-full shadow-inner p-4 border-0"
-                                                    type="text"
-                                                    {...register("endingTime", { required: true })}
-                                                    placeholder="Enter end time of appointment"
-                                                />
-                                                {errors.endTime && <span className="text-xs text-red">{errors.endTime.message}</span>}
-                                            </div>
+                                            <LocalizationProvider dateAdapter={AdapterDayjs} >
+                                                <div className='m-2'>
+                                                    <TimePicker
+                                                        label="Select Opening Time"
+                                                        renderInput={(params) => <TextField {...params} />}
+                                                        format="hh:mm a"
+                                                        onChange={(time) => {
+                                                            const selectedTime = extractTime(time)
+                                                            console.log(selectedTime)
+
+                                                            setValue('startTime', selectedTime)
+                                                        }}
+                                                    />
+                                                </div>
+                                                <div className='m-2'>
+                                                    <TimePicker
+                                                        label="Select Closing Time"
+                                                        renderInput={(params) => <TextField {...params} />}
+                                                        format="hh:mm a"
+                                                        onChange={(time) => {
+                                                            const selectedTime = extractTime(time)
+                                                            console.log(selectedTime)
+
+                                                            setValue('endTime', selectedTime)
+                                                        }}
+
+                                                    />
+                                                </div>
+                                            </LocalizationProvider>
                                         </div>
                                         <div className="md:flex mb-4">
                                             <div className="md:flex-1 md:pr-3">
-                                                <label className="block uppercase tracking-wide text-charcoal-darker text-xs font-bold">
-                                                    Symtomps
-                                                </label>
                                                 <input
                                                     className="w-full shadow-inner p-4 border-0"
                                                     type="text"
@@ -274,9 +291,7 @@ function AppointmentDoctor() {
                                                 {errors.endTime && <span className="text-xs text-red">{errors.endTime.message}</span>}
                                             </div>
                                             <div className="md:flex-1 md:pr-3">
-                                                <label className="block uppercase tracking-wide text-charcoal-darker text-xs font-bold">
-                                                    Diagnosis
-                                                </label>
+
                                                 <input
                                                     className="w-full shadow-inner p-4 border-0"
                                                     type="text"
@@ -288,9 +303,7 @@ function AppointmentDoctor() {
                                         </div>
                                         <div className="md:flex mb-4">
                                             <div className="md:flex-1 md:pr-3">
-                                                <label className="block uppercase tracking-wide text-charcoal-darker text-xs font-bold">
-                                                    Prescription
-                                                </label>
+
                                                 <input
                                                     className="w-full shadow-inner p-4 border-0"
                                                     type="text"
@@ -300,9 +313,7 @@ function AppointmentDoctor() {
                                                 {errors.prescription && <span className="text-xs text-red">{errors.prescription.message}</span>}
                                             </div>
                                             <div className="md:flex-1 md:pr-3">
-                                                <label className="block uppercase tracking-wide text-charcoal-darker text-xs font-bold">
-                                                    Notes
-                                                </label>
+
                                                 <input
                                                     className="w-full shadow-inner p-4 border-0"
                                                     type="text"
@@ -314,7 +325,7 @@ function AppointmentDoctor() {
                                         </div>
                                         <div className="md:flex mb-4">
                                             <div className="md:flex-1 md:pr-3">
-                                                <label className="block uppercase tracking-wide text-charcoal-darker text-xs font-bold">
+                                                <label className="block uppercase tracking-wide text-charcoal-darker text-xs    ">
                                                     Follow Up Date
                                                 </label>
                                                 <input
@@ -326,7 +337,7 @@ function AppointmentDoctor() {
                                                 {errors.followUpDate && <span className="text-xs text-red">{errors.followUpDate.message}</span>}
                                             </div>
                                             <div className="md:flex-1 md:pr-3">
-                                                <label className="block uppercase tracking-wide text-charcoal-darker text-xs font-bold">
+                                                <label className="block uppercase tracking-wide text-charcoal-darker text-xs    ">
                                                     Follow Up Instructions
                                                 </label>
                                                 <input
@@ -341,51 +352,65 @@ function AppointmentDoctor() {
                                         <div className="md:flex mb-4">
                                             <div className="md:flex-1 md:pr-3 mb-1">
                                                 {fields.map((field, index) => (
-                                                    <div key={field.id}>
-                                                        <label htmlFor={`medicines.${index}`}>Medicine Name:</label>
+                                                    <div key={field.id} className="flex mb-4">
+                                                        <label htmlFor={`medicines.${index}`} className="w-1/4 mr-2 text-sm">Medicine Name:</label>
                                                         <input
                                                             {...register(`medicines.${index}`)}
                                                             id={`medicines.${index}`}
                                                             placeholder="Enter medicine name"
+                                                            className="w-full px-2 py-1 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                                                         // Add required or other validation attributes
                                                         />
-                                                        {errors[`medicines.${index}`] && <p>{errors[`medicines.${index}`]?.message}</p>}
+                                                        {errors[`medicines.${index}`] && <p className="text-red-500 text-xs ml-2">{errors[`medicines.${index}`]?.message}</p>}
 
                                                         {/* ... Other input fields for dosage, frequency, etc. */}
 
-                                                        <button type="button" className='bg-red-500 my-1 text-white p-1 px-2 rounded-[10px]' onClick={() => remove(index)}>Remove</button>
+                                                        <button type="button" className="ml-1 py-1 px-2 rounded-md bg-red-500 text-white hover:bg-red-600 focus:outline-none"
+                                                            onClick={() => remove(index)}>Remove</button>
                                                     </div>
                                                 ))}
-                                                <button type="button" className='bg-[#7371fc] text-white p-1 px-2 rounded-[10px]' onClick={() => append('')}>Add Medicine</button>
+                                                <button type="button" className='bg-[#7371fc] text-white py-1 px-2 rounded-md' onClick={() => append('')}>Add Medicine</button>
                                             </div>
                                             <div className="md:flex-1 md:pr-3">
-                                                {fileds1.map((field, index) => (
-                                                    <div key={field.id}>
-                                                        <label htmlFor={`tests.${index}`}>Test Name:</label>
+
+                                                {fields1.map((field, index) => (
+                                                    <div key={field.id} className="flex mb-4">
+                                                        <label htmlFor={`tests.${index}`} className="w-1/4 mr-2 text-sm">
+                                                            Test Name:
+                                                        </label>
                                                         <input
                                                             {...register(`tests.${index}`)}
                                                             id={`tests.${index}`}
                                                             placeholder="Enter test name"
+                                                            className="w-full px-2 py-1 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                                                         // Add required or other validation attributes
                                                         />
-                                                        {errors[`tests.${index}`] && <p>{errors[`tests.${index}`]?.message}</p>}
+                                                        {errors[`tests.${index}`] && (
+                                                            <p className="text-red-500 text-xs ml-2">{errors[`tests.${index}`]?.message}</p>
+                                                        )}
 
                                                         {/* ... Other input fields for dosage, frequency, etc. */}
 
-                                                        <button type="button" className='bg-red-500 my-1 text-white p-1 px-2 rounded-[10px]' onClick={() => remove1(index)}>Remove</button>
+                                                        <button
+                                                            type="button"
+                                                            className="ml-auto py-1 px-2 rounded-md bg-red-500 text-white hover:bg-red-600 focus:outline-none ml-1"
+                                                            onClick={() => remove1(index)}
+                                                        >
+                                                            Remove
+                                                        </button>
                                                     </div>
                                                 ))}
-                                                <button type="button" className='bg-[#7371fc] text-white p-1 px-2 rounded-[10px]' onClick={() => append1('')}>Add Test</button>
+
+                                                <button type="button" className='bg-[#7371fc] text-white p-1 px-2 rounded-md' onClick={() => append1('')}>Add Test</button>
                                             </div>
                                         </div>
-                                        <button type='submit' className='bg-[#7371fc] text-white p-1 px-2 rounded-[10px]'>submit</button>
+                                        <button type='submit' className='bg-[#7371fc] text-white p-1 px-2 rounded-md'>Update Appointment</button>
                                     </div>
                                 </div>
 
                             </form>
                         }
                         {
-                            
                         }
                     </section>
 

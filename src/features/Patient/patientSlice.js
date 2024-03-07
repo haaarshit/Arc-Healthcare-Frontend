@@ -1,9 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchCount, getDoctorProfile, loginPatient, logoutPatient } from './patientAPI';
+import { createPatient, fetchCount, fetchPatientDashboard, getDoctorProfile, loginPatient, logoutPatient } from './patientAPI';
 
 const initialState = {
   isPatient: false,
   patientDashBoard: null,
+  patientData: null,
+  isPending:false,
   doctorProfileForPatient: null,
   status: 'idle',
 };
@@ -29,7 +31,7 @@ export const loginPatientAsync = createAsyncThunk(
 export const createPatientAsync = createAsyncThunk(
   'counter/createPatient',
   async (data) => {
-    const response = await loginPatient(data);
+    const response = await createPatient(data);
     return response.data;
   }
 );
@@ -39,6 +41,14 @@ export const logoutPatientAsync = createAsyncThunk(
   'doctor/logoutPatient',
   async () => {
       const response = await logoutPatient();
+      return response.data;
+  }
+);
+
+export const getPatientDashboardAsync = createAsyncThunk(
+  'doctor/getPatientDashboard',
+  async () => {
+      const response = await fetchPatientDashboard();
       return response.data;
   }
 );
@@ -74,15 +84,39 @@ export const patientSlice = createSlice({
         state.status = 'idle';
         state.isPatient = true;
       })
+      // create patient
+      .addCase(createPatientAsync.pending, (state) => {
+        state.status = 'loading';
+        state.isPending = true;
+      })
+      .addCase(createPatientAsync.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.isPending = false;
+        state.isPatient = true;
+        state.patientData = action.payload;
+      })
       // logout patient
       .addCase(logoutPatientAsync.pending, (state) => {
+        state.isPending = true;
         state.status = 'loading';
       })
       .addCase(logoutPatientAsync.fulfilled, (state, action) => {
+        state.isPending = false;
         state.status = 'idle';
         state.isPatient = false;
         state.patientDashBoard = null;
         state.doctorProfileForPatient = null;
+      })
+      // logout patient
+      .addCase(getPatientDashboardAsync.pending, (state) => {
+        state.isPending = true;
+        state.status = 'loading';
+      })
+      .addCase(getPatientDashboardAsync.fulfilled, (state, action) => {
+        state.isPending = false;
+        state.status = 'idle';
+        state.isPatient = true;
+        state.patientDashBoard = action.payload;
       });
   },
 });
@@ -91,5 +125,6 @@ export const { increment, decrement, incrementByAmount } = patientSlice.actions;
 export const isPatient = (state) => state.patient.isPatient;
 export const patientDashBoard = (state) => state.patient.patientDashBoard;
 export const doctorProfile = (state) => state.patient.doctorProfileForPatient;
+export const patientData = (state) => state.patient.patientData;
 
 export default patientSlice.reducer;

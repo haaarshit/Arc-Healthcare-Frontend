@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { getAllDoctorAsync, getAllDoctors, getDoctorDashboardAsync, isDoctor } from '../Doctor/doctorSlice'
-import { isPatient } from '../Patient/patientSlice'
+import { getPatientDashboardAsync, isPatient } from '../Patient/patientSlice'
 import {
     Card,
     CardHeader,
@@ -21,12 +21,8 @@ function Home() {
     const isDoctorLoggedIn = useSelector(isDoctor)
     useEffect(() => {
         dispatch(getAllDoctorAsync())
-        if (isDoctorLoggedIn) {
             dispatch(getDoctorDashboardAsync())
-        }
-        if (isPatientLoggedIn) {
-            // dispatch(getDoctorDashboardAsync())
-        }
+            dispatch(getPatientDashboardAsync())
 
     }, [])
     return (
@@ -103,25 +99,8 @@ const DoctorCards = ({ doctors }) => {
 
             {
                 doctors && doctors.map(doctor =>
-                    // <div className="w-full px-4 sm:w-[25vw]">
-                    //     <div className=" p-10 md:px-7 xl:px-10 rounded-[20px] flex flex-col items-center bg-white shadow-md hover:shadow-lg mb-8 ">
-                    //         <div className=" w-[70px] h-[70px] flex items-center justify-center bg-primary rounded-2xl mb-8">
-                    //             <Avatar src={doctor.avatar} alt="avatar" />
-                    //         </div>
-                    //         <h4 className="font-semibold text-xl text-dark mb-3">
-                    //             {doctor.personalInfo.firstName} {doctor.personalInfo.lastName}
-                    //         </h4>
-                    //         <p className="text-body-color">
-                    //             {doctor.professionalInfo.qualifications[0].degree}
-                    //         </p>
-                    //         <p>
-                    //             {doctor.professionalInfo.specializations[0]}
-                    //         </p>
-                    //         <Link to={`/doctor/${doctor.id}`} className='bg-[#7371fc] text-white text-xl mt-3 p-2 rounded-[15px]'>Visit Profile</Link>
-                    //     </div>
-                    // </div>
                     <>
-                        <Card className="mx-2 my-2 w-full px-4 sm:w-[22vw] rounded-[10px] ">
+                        <Card className="mx-2 my-2 w-full px-4 sm:w-[22vw] rounded-[10px] mb-4 ">
                             <CardHeader color="blue-gray" className="relative ">
                                 <img
                                     src={doctor.avatar}
@@ -130,18 +109,18 @@ const DoctorCards = ({ doctors }) => {
                             </CardHeader>
                             <CardBody>
                                 <Typography variant="h5" color="blue-gray" className="mb-2">
-                                    {doctor.personalInfo.firstName} {doctor.personalInfo.lastName}
+                                    {doctor.personalInfo?.firstName} {doctor.personalInfo.lastName}
                                 </Typography>
                                 <Typography>
-                                    {doctor.professionalInfo.specializations[0]}
+                                    {doctor.professionalInfo?.specializations[0]}
                                 </Typography>
                                 <Typography>
-                                    {doctor.professionalInfo.qualifications[0].degree}
+                                    {doctor.professionalInfo?.qualifications[0].degree}
                                 </Typography>
                             </CardBody>
                             <CardFooter className="pt-0">
                                 <Link to={`/doctor/${doctor.id}`}>
-                                    <Button className='bg-[#7371fc] px-1'>Read More</Button>
+                                    <Button className='bg-[#7371fc] px-1 font-semibold'>Read More</Button>
                                 </Link>
                             </CardFooter>
                         </Card>
