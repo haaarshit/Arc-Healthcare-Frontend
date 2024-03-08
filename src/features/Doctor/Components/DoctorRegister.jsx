@@ -488,7 +488,7 @@ const ProfessionalInfo = ({ register, errors }) => {
 }
 
 // Avaibility component
-const Availability = ({ register, errors, control, setValue }) => {
+export const Availability = ({ register, errors, control, setValue }) => {
 
 
 

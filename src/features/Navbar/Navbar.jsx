@@ -178,7 +178,7 @@ function MyNavbar() {
                             <Link className=" p-2  rounded-full hover:bg-[#7371fc]  rounded-full hover:text-white duration-200">
                                 Logout <LogoutIcon />
                             </Link> */}
-                        {!isDoctorLogin ?
+                        {!isDoctorLogin && !isPatientLogin ?
                             <div>
                                 <Link className=" p-2  hover:bg-[#7371fc]  rounded-full hover:text-white duration-200">
                                     User Login <LoginIcon />
@@ -188,7 +188,7 @@ function MyNavbar() {
                                 </Link>
                             </div>
                             :
-                            <Link className=" p-2  rounded-full hover:bg-[#7371fc]  rounded-full hover:text-white duration-200">
+                            <Link onClick={handleLogout} className=" p-2  rounded-full hover:bg-[#7371fc]  rounded-full hover:text-white duration-200">
                                 Logout <LogoutIcon />
                             </Link>
                         }

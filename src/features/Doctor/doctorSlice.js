@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createDoctor, fetchAllDoctors, fetchDoctorDashboard, fetchPatientProfile, loginDoctor, logoutDoctor, updateAppointment } from './doctorAPI';
+import { createAppointmet, createDoctor, fetchAllDoctors, fetchDoctorDashboard, fetchPatientProfile, loginDoctor, logoutDoctor, updateAppointment, updateAvailability } from './doctorAPI';
 
 const initialState = {
     isDoctor: false,
@@ -72,8 +72,23 @@ export const getPatientProfileAsync = createAsyncThunk(
 //  
 export const updateAppointmentAsync = createAsyncThunk(
     'doctor/updateAppointment',
-    async (id,data) => {
-        const response = await updateAppointment(id,data);
+    async (data) => {
+        const response = await updateAppointment(data);
+        return response.data;
+    }
+);
+export const updateAvailabilityAsync = createAsyncThunk(
+    'doctor/updateAvailability',
+    async (data) => {
+        const response = await updateAvailability(data);
+        return response.data;
+    }
+);
+
+export const createAppointmetAsync = createAsyncThunk(
+    'doctor/createAppointmet',
+    async (data) => {
+        const response = await createAppointmet(data);
         return response.data;
     }
 );
@@ -175,7 +190,7 @@ export const doctorSlice = createSlice({
                 state.doctorData = null
                 state.doctorDashBoard = null
             })
-            // 
+            // get Patient Profile for doctor
             .addCase(getPatientProfileAsync.pending, (state) => {
                 state.status = 'loading';
                 state.isPanding = true
@@ -197,6 +212,30 @@ export const doctorSlice = createSlice({
                 state.isPanding = false
             })
             .addCase(updateAppointmentAsync.fulfilled, (state, action) => {
+                state.status = 'idle';
+                state.isPanding = false
+            })
+            // update doctors Availability 
+            .addCase(updateAvailabilityAsync.pending, (state) => {
+                state.status = 'loading';
+                state.isPanding = true
+            })
+            .addCase(updateAvailabilityAsync.rejected, (state, action) => {
+                state.isPanding = false
+            })
+            .addCase(updateAvailabilityAsync.fulfilled, (state, action) => {
+                state.status = 'idle';
+                state.isPanding = false
+            })
+            // create appointment 
+            .addCase(createAppointmetAsync.pending, (state) => {
+                state.status = 'loading';
+                state.isPanding = true
+            })
+            .addCase(createAppointmetAsync.rejected, (state, action) => {
+                state.isPanding = false
+            })
+            .addCase(createAppointmetAsync.fulfilled, (state, action) => {
                 state.status = 'idle';
                 state.isPanding = false
             })

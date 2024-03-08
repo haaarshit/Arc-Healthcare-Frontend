@@ -105,7 +105,6 @@ export const fetchPatientDashboard = async () => {
   );
 }
 
-
 export const getDoctorProfile = async (id) => {
   return new Promise(async (resolve, reject) => {
     try {

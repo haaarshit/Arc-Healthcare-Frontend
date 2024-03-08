@@ -3,20 +3,28 @@ import { setCookie, getCookie, imageToBase64 } from "../../Utils/UtilFunctions";
 
 const requestUrl = process.env.REACT_APP_BACKEND_URL
 
-// convert image to base64
-
-
-export const createDoctor = async (data) => {
-  const base64Img = await imageToBase64(data.avatar[0])
-
+const extractDays = (data) => {
   const availableDays = [];
-
-  // Using Object.entries for key-value pairs
   for (const [day, isAvailable] of Object.entries(data.availability.availableDays)) {
     if (isAvailable) {
       availableDays.push(day);
     }
   }
+  return availableDays
+
+}
+
+export const createDoctor = async (data) => {
+  const base64Img = await imageToBase64(data.avatar[0])
+
+  const availableDays = extractDays(data);
+
+  // // Using Object.entries for key-value pairs
+  // for (const [day, isAvailable] of Object.entries(data.availability.availableDays)) {
+  //   if (isAvailable) {
+  //     availableDays.push(day);
+  //   }
+  // }
 
   return new Promise(async (resolve, reject) => {
     try {
@@ -173,29 +181,31 @@ export const fetchPatientProfile = async (id) => {
   );
 }
 
-export const updateAppointment = async (id, data) => {
+
+export const updateAppointment = async (data) => {
 
   return new Promise(async (resolve, reject) => {
 
     try {
+      // todo =>  getting undefined in data
       let appointmentData = {
-        startTime: data.startTime,
-        endTime: data.endTime,
-        symptoms: data.symptoms,
-        diagnosis: data.diagnosis,
-        prescription: data.prescription,
+        startTime: data.requestData.startTime,
+        endTime: data.requestData.endTime,
+        symptoms: data.requestData.symptoms,
+        diagnosis: data.requestData.diagnosis,
+        prescription: data.requestData.prescription,
         status: 'completed',
-        notes: data.notes,
-        followUpDate: data.followUpDate,
-        followUpInstructions: data.followUpInstructions,
+        notes: data.requestData.notes,
+        followUpDate: data.requestData.followUpDate,
+        followUpInstructions: data.requestData.followUpInstructions,
         appointmentType: '',
-        prescribedMedications: data.medicines,
-        labTestRequests: data.tests,
+        prescribedMedications: data.requestData.medicines,
+        labTestRequests: data.requestData.tests,
         patientConsent: true,
       }
       console.log(appointmentData)
       const token = getCookie('token')
-      const response = await axios.put(requestUrl + "/api/auth/doctor/appointment/update/" + id, appointmentData, {
+      const response = await axios.put(requestUrl + "/api/auth/doctor/appointment/update/" + data.id, appointmentData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Access-Control-Allow-Origin': '*',
@@ -214,3 +224,82 @@ export const updateAppointment = async (id, data) => {
   }
   );
 }
+
+
+export const updateAvailability = async (data) => {
+  console.log(data.availability)
+
+  return new Promise(async (resolve, reject) => {
+    data.availability.availableDays = extractDays(data)
+
+    try {
+      const token = getCookie('token')
+      const response = await axios.put(requestUrl + "/api/auth/doctor/update-avaibility", data.availability, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Access-Control-Allow-Origin': '*',
+        },
+        proxy: {
+          host: requestUrl,
+          port: 8080
+        },
+        withCredentials: false
+      })
+      console.log(response.data)
+      resolve({ data: response.data })
+    }
+    catch (e) {
+      reject(e)
+    }
+  }
+  );
+}
+
+export const createAppointmet = async (data) => {
+
+  return new Promise(async (resolve, reject) => {
+    const requestData = {
+      patientId: data.requestData.patientId,
+      doctorId: data.requestData.doctorId,
+      patientName: '',
+      patientEmail: '',
+      appointmentDate: data.requestData.appointmentDate,
+      startTime: '',
+      endTime: '',
+      symptoms: '',
+      diagnosis: '',
+      prescription: '',
+      status: 'pending',
+      notes: '',
+      followUpDate: '',
+      followUpInstructions: '',
+      appointmentType: '',
+      prescribedMedications: '',
+      labTestRequests: '',
+      patientConsent: '',
+    }
+
+    try {
+      console.log(requestData)
+      const token = getCookie('token')
+      const response = await axios.post(requestUrl + "/api/auth/doctor/create-appointment?id=" + data.id, data.requestData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Access-Control-Allow-Origin': '*',
+        },
+        proxy: {
+          host: requestUrl,
+          port: 8080
+        },
+        withCredentials: false
+      })
+      console.log(response.data)
+      resolve({ data: response.data })
+    }
+    catch (e) {
+      reject(e)
+    }
+  }
+  );
+}
+
