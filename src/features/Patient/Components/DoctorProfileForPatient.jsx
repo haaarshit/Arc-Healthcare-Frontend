@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Avatar } from "@material-tailwind/react";
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
-import { doctorProfile, getDoctorProfileAsync } from '../patientSlice';
+import { doctorProfile, getDoctorProfileAsync, patientDashBoard, requestAppointmentAsync } from '../patientSlice';
 import ImageModal from '../../../Components/ImageModal';
+import { Box, Modal } from '@mui/material';
 
 
 function DoctorProfileForPatient() {
@@ -11,15 +12,23 @@ function DoctorProfileForPatient() {
     console.log(id)
     const dispatch = useDispatch()
     const DoctorProfile = useSelector(doctorProfile)
+    const dashboardPatient = useSelector(patientDashBoard)
     const [isAvatarModal, setAvatarModal] = useState(false)
-    const handleClick = () => setAvatarModal(!isAvatarModal)
+    const [isRequestAppointment, setIsRequestAppointment] = useState(false)
+    const [requestAppointmentData,setRequestAppointmentData] = useState({})
 
-    // sort on the basis of date
-    // DoctorProfile.appointmentList = DoctorProfile.appointmentList.sort((a, b) => {
-    //     const dateA = datetime.parse(a.createdAt);
-    //     const dateB = datetime.parse(b.createdAt);
-    //     return dateA.isBefore(dateB) ? -1 : 1;
-    // });
+    const handleClick = () => setAvatarModal(!isAvatarModal)
+    const handleIsRequestAppointment = () => {
+        setIsRequestAppointment(!isRequestAppointment)
+        if(DoctorProfile !== null && dashboardPatient !== null){
+            setRequestAppointmentData({
+                patientId:dashboardPatient.patientInfo.id,
+                doctorId:DoctorProfile.doctorInfo.id,
+            })
+        }
+    }
+
+
     useEffect(() => {
         dispatch(getDoctorProfileAsync(id))
     }, [dispatch])
@@ -60,7 +69,7 @@ function DoctorProfileForPatient() {
                                             </li>
                                         </ul>
 
-                                        <button className='bg-[#7371fc] py-1 px-2 rounded text-white text-sm my-2'>Book Appointment</button>
+                                        <button className='bg-[#7371fc] py-1 px-2 rounded text-white text-sm my-2' onClick={handleIsRequestAppointment}>Request Appointment</button>
                                     </div>
                                     {/* End of profile card */}
                                     <div className="my-4" />
@@ -210,6 +219,7 @@ function DoctorProfileForPatient() {
                             </div>
 
                             <ImageModal avatar={DoctorProfile.doctorInfo.avatar} handleClick={handleClick} isAvatarModal={isAvatarModal} />
+                            <RequestAppointmentModal handleClick={handleIsRequestAppointment} isRequestAppointment={isRequestAppointment} requestAppointmentData={requestAppointmentData}/>
                         </div>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 ">
                             <div className="p-6 relative flex flex-col min-w-0 mb-4 lg:mb-0 break-words bg-gray-50 dark:bg-gray-800 w-full shadow-lg rounded ">
@@ -245,7 +255,10 @@ function DoctorProfileForPatient() {
                                                                 {e.appointmentDate}
                                                             </th>
                                                             <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                                                <Link to={`/patient/appointment/${e.id}`} className='bg-[#7371fc] p-1 rounded-[10px]'>Visit</Link>
+                                                                {
+                                                         
+                                                                    <Link to={`/patient/appointment/${e.id}`} className='bg-[#7371fc] text-white rounded-sm text-sm px-2 py-1'>Visit</Link>
+                                                                }
                                                             </td>
                                                             <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                                                                 <div className="flex items-center">
@@ -276,5 +289,40 @@ function DoctorProfileForPatient() {
         </div>
     )
 }
+
+const RequestAppointmentModal = ({ handleClick, isRequestAppointment,requestAppointmentData }) => {
+    const dispatch = useDispatch()
+    const [disable,setDisable] = useState(false)
+    const submitHandler = () => {
+        setDisable(!disable)
+        console.log(requestAppointmentData)
+        dispatch(requestAppointmentAsync(requestAppointmentData))
+        setTimeout(()=>{
+            handleClick()
+        },1000)
+    }
+
+    useEffect(() => { 
+
+    }, [dispatch])
+
+    return (
+        <Modal
+            open={isRequestAppointment}
+            onClose={handleClick}
+            aria-labelledby="parent-modal-title"
+            aria-describedby="parent-modal-description"
+            className='flex items-center justify-center p-1 '
+        >
+            <Box className='relative border  border-none bg-white sm:w-auto  w-[90%] flex justify-center px-2'>
+                <div className='sm:w-[25vw] w-[90vw] flex flex-col justify-center items-center p-2'>
+                    <h1>Request An Appointment to Doctor</h1>
+                    <button disabled={disable} className='bg-[#7371fc] text-white rounded-sm text-sm px-2 py-1 w-[90px] mt-3' onClick={submitHandler}>Request</button>
+                </div>
+            </Box>
+        </Modal>
+    )
+}
+
 
 export default DoctorProfileForPatient

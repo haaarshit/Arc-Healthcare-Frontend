@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createPatient, fetchCount, fetchPatientDashboard, getDoctorProfile, loginPatient, logoutPatient } from './patientAPI';
+import { createPatient, fetchCount, fetchPatientDashboard, getDoctorProfile, loginPatient, logoutPatient, requestAppointment } from './patientAPI';
 
 const initialState = {
   isPatient: false,
@@ -49,6 +49,14 @@ export const getPatientDashboardAsync = createAsyncThunk(
   'doctor/getPatientDashboard',
   async () => {
       const response = await fetchPatientDashboard();
+      return response.data;
+  }
+);
+
+export const requestAppointmentAsync = createAsyncThunk(
+  'doctor/requestAppointment',
+  async (data) => {
+      const response = await requestAppointment(data);
       return response.data;
   }
 );
@@ -117,6 +125,15 @@ export const patientSlice = createSlice({
         state.status = 'idle';
         state.isPatient = true;
         state.patientDashBoard = action.payload;
+      })
+      // logout patient
+      .addCase(requestAppointmentAsync.pending, (state) => {
+        state.isPending = true;
+        state.status = 'loading';
+      })
+      .addCase(requestAppointmentAsync.fulfilled, (state, action) => {
+        state.isPending = false;
+        state.status = 'idle';
       });
   },
 });

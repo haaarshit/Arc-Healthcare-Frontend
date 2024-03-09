@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { doctorDashBoard, getPatientProfileAsync, patientProfile, updateAppointmentAsync } from '../doctorSlice'
+import { doctorDashBoard, getDoctorDashboardAsync, getPatientProfileAsync, patientProfile, updateAppointmentAsync } from '../doctorSlice'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Avatar } from '@material-tailwind/react'
 import { useFieldArray, useForm } from "react-hook-form";
@@ -10,6 +10,8 @@ import { extractTime } from '../../../Utils/UtilFunctions'
 import { LocalizationProvider, TimePicker, renderTimeViewClock } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { TextField } from '@mui/material';
+import AppointmentPdf from '../../../Components/AppointmentPdf'
+import { PDFDownloadLink } from '@react-pdf/renderer'
 
 
 
@@ -56,6 +58,8 @@ function AppointmentDoctor() {
 
     useEffect(() => {
         // get the appointmet whose id matches with current id(param id)
+
+        if (dashboard === null) dispatch(getDoctorDashboardAsync())
         dashboard?.appointmentList.forEach(e => {
             if (e.id === id) setAppointment(e)
         })
@@ -64,7 +68,10 @@ function AppointmentDoctor() {
         // fetch the patient of the appointment
         if (appointment.patientId) dispatch(getPatientProfileAsync(appointment.patientId))
 
-    }, [dispatch, appointment, dashboard])
+        // 
+
+
+    }, [dispatch, appointment, dashboard, id])
 
 
     return (
@@ -196,7 +203,12 @@ function AppointmentDoctor() {
                                                             {e.appointmentDate}
                                                         </th>
                                                         <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                                            <Link to={`/doctor/appointment/${e.id}`} className='bg-[#7371fc] p-1 rounded-md'>Visit</Link>
+                                                            {
+                                                                e.id !== id ?
+                                                                <Link to={`/doctor/appointment/${e.id}`} className='bg-[#7371fc] text-white rounded-sm text-sm px-2 py-1' >Visit</Link>
+                                                                :
+                                                                <p>Current Appointment</p>
+                                                            }
                                                         </td>
                                                         <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                                                             <div className="flex items-center">
@@ -230,7 +242,7 @@ function AppointmentDoctor() {
 
                             <>
                                 <div className="md:flex">
-                                    <h2 className="md:w-1/3 uppercase tracking-wide text-sm sm:text-lg mb-6">
+                                    <h2 className='  rounded-sm text-md  py-1'>
                                         Update Appointmet
                                     </h2>
                                 </div>
@@ -363,11 +375,11 @@ function AppointmentDoctor() {
 
                                                             {/* ... Other input fields for dosage, frequency, etc. */}
 
-                                                            <button type="button" className="ml-1 py-1 px-2 rounded-md bg-red-500 text-white hover:bg-red-600 focus:outline-none"
+                                                            <button type="button" className="bg-red-500 text-white rounded-sm text-sm px-2 py-1"
                                                                 onClick={() => remove(index)}>Remove</button>
                                                         </div>
                                                     ))}
-                                                    <button type="button" className='bg-[#7371fc] text-white py-1 px-2 rounded-md' onClick={() => append('')}>Add Medicine</button>
+                                                    <button type="button" className='bg-[#7371fc] text-white rounded-sm text-sm px-2 py-1' onClick={() => append('')}>Add Medicine</button>
                                                 </div>
                                                 <div className="md:flex-1 md:pr-3">
 
@@ -391,7 +403,7 @@ function AppointmentDoctor() {
 
                                                             <button
                                                                 type="button"
-                                                                className="ml-auto py-1 px-2 rounded-md bg-red-500 text-white hover:bg-red-600 focus:outline-none ml-1"
+                                                                className="bg-red-500 text-white rounded-sm text-sm px-2 py-1"
                                                                 onClick={() => remove1(index)}
                                                             >
                                                                 Remove
@@ -399,10 +411,10 @@ function AppointmentDoctor() {
                                                         </div>
                                                     ))}
 
-                                                    <button type="button" className='bg-[#7371fc] text-white p-1 px-2 rounded-md' onClick={() => append1('')}>Add Test</button>
+                                                    <button type="button" className='bg-[#7371fc] text-white rounded-sm text-sm px-2 py-1' onClick={() => append1('')}>Add Test</button>
                                                 </div>
                                             </div>
-                                            <button type='submit' className='bg-[#7371fc] text-white p-1 px-2 rounded-md'>Update Appointment</button>
+                                            <button type='submit' className='bg-[#7371fc] text-white rounded-sm text-sm px-2 py-1'>Update Appointment</button>
                                         </div>
                                     </div>
 
@@ -415,7 +427,7 @@ function AppointmentDoctor() {
                 {
                     appointment.status === 'completed' && patient &&
                     <div>
-                        <div className="container mx-auto my-5 p-5 ">
+                        <div className="container mx-auto my-5 p-5 flex flex-col justify-center  ">
                             <div className="md:flex no-wrap md:-mx-2 ">
 
                                 {/* Right Side */}
@@ -490,6 +502,11 @@ function AppointmentDoctor() {
                                     {/* End of about section */}
                                     <div className="my-4" />
                                 </div>
+                            </div>
+                            <div className=' pl-5'>
+                                <PDFDownloadLink document={<AppointmentPdf data={appointment} doctorData={dashboard} />} fileName="appointment_details.pdf" className='bg-[#7371fc] text-white rounded-sm text-sm px-2 py-1 w-[110px]'>
+                                    {({ loading }) => (loading ? 'Loading...' : 'Generate PDF')}
+                                </PDFDownloadLink>
                             </div>
                         </div>
                     </div>

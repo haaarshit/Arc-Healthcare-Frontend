@@ -424,10 +424,10 @@ export function DoctorDashBoard() {
                 {dashboard.doctorInfo?.availability?.availableDays?.map((day) => (
                   <>
                     <div key={day} className="text-gray-700 font-medium px-2 flex w-full my-2">
-                      <p className='mr-10 w-[25px]'>
+                      <p className='mr-12 w-[25px] '>
                         {day}
                       </p>
-                      <div key={day} className="relative bg-[#7371fc] text-white rounded-full px-4 py-1">
+                      <div key={day} className="relative bg-[#7371fc] text-white rounded-full px-4 py-1  ml-5 ">
                         <p className="text-xs font-medium">{dashboard.doctorInfo?.availability?.availableTime?.startTime} - {dashboard.doctorInfo?.availability?.availableTime?.endTime}</p>
                       </div>
                     </div>
