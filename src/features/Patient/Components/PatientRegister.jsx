@@ -225,7 +225,7 @@ function PatientRegister() {
                                     {
                                         bloodGroupArray.map(e => (
 
-                                            <option value="high">{e}</option>
+                                            <option value={e}>{e}</option>
                                         ))
                                     }
                                 </select>

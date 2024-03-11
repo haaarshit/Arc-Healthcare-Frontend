@@ -5,7 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 import { doctorProfile, getDoctorProfileAsync, patientDashBoard, requestAppointmentAsync } from '../patientSlice';
 import ImageModal from '../../../Components/ImageModal';
 import { Box, Modal } from '@mui/material';
-
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 
 function DoctorProfileForPatient() {
     const { id } = useParams();
@@ -15,15 +15,15 @@ function DoctorProfileForPatient() {
     const dashboardPatient = useSelector(patientDashBoard)
     const [isAvatarModal, setAvatarModal] = useState(false)
     const [isRequestAppointment, setIsRequestAppointment] = useState(false)
-    const [requestAppointmentData,setRequestAppointmentData] = useState({})
+    const [requestAppointmentData, setRequestAppointmentData] = useState({})
 
     const handleClick = () => setAvatarModal(!isAvatarModal)
     const handleIsRequestAppointment = () => {
         setIsRequestAppointment(!isRequestAppointment)
-        if(DoctorProfile !== null && dashboardPatient !== null){
+        if (DoctorProfile !== null && dashboardPatient !== null) {
             setRequestAppointmentData({
-                patientId:dashboardPatient.patientInfo.id,
-                doctorId:DoctorProfile.doctorInfo.id,
+                patientId: dashboardPatient.patientInfo.id,
+                doctorId: DoctorProfile.doctorInfo.id,
             })
         }
     }
@@ -219,9 +219,9 @@ function DoctorProfileForPatient() {
                             </div>
 
                             <ImageModal avatar={DoctorProfile.doctorInfo.avatar} handleClick={handleClick} isAvatarModal={isAvatarModal} />
-                            <RequestAppointmentModal handleClick={handleIsRequestAppointment} isRequestAppointment={isRequestAppointment} requestAppointmentData={requestAppointmentData}/>
+                            <RequestAppointmentModal handleClick={handleIsRequestAppointment} isRequestAppointment={isRequestAppointment} requestAppointmentData={requestAppointmentData} />
                         </div>
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 ">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 w-full">
                             <div className="p-6 relative flex flex-col min-w-0 mb-4 lg:mb-0 break-words bg-gray-50 dark:bg-gray-800 w-full shadow-lg rounded ">
                                 <div className="rounded-t mb-0 px-0 border-0">
                                     <div className="flex flex-wrap items-center px-4 py-2">
@@ -256,7 +256,7 @@ function DoctorProfileForPatient() {
                                                             </th>
                                                             <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                                                                 {
-                                                         
+
                                                                     <Link to={`/patient/appointment/${e.id}`} className='bg-[#7371fc] text-white rounded-sm text-sm px-2 py-1'>Visit</Link>
                                                                 }
                                                             </td>
@@ -281,6 +281,32 @@ function DoctorProfileForPatient() {
                                     </div>
                                 </div>
                             </div>
+                            <div >
+                                <div className="flex items-center space-x-2 font-semibold text-gray-900 leading-8 my-3">
+                                    <span clas="text-green-500">
+                                        <EventAvailableIcon className='h-[24px]' />
+                                    </span>
+                                    <span className="tracking-wide">Available on</span>
+                                </div>
+                                <ul className="list-inside space-y-2">
+                                    <div className="bg-white border border-gray-100 shadow-md shadow-black/5 p-2 rounded-md">
+                                        <div className="flex justify-between flex-col">
+                                            {DoctorProfile.doctorInfo?.availability?.availableDays?.map((day) => (
+                                                <>
+                                                    <div key={day} className="text-gray-700 font-medium px-2 flex w-full my-2">
+                                                        <p className='mr-12 w-[25px] '>
+                                                            {day}
+                                                        </p>
+                                                        <div key={day} className="relative bg-[#7371fc] text-white rounded-full px-4 py-1  ml-5 ">
+                                                            <p className="text-xs font-medium">{DoctorProfile.doctorInfo?.availability?.availableTime?.startTime} - {DoctorProfile.doctorInfo?.availability?.availableTime?.endTime}</p>
+                                                        </div>
+                                                    </div>
+                                                </>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </ul>
+                            </div>
                         </div>
                     </div>
 
@@ -290,19 +316,19 @@ function DoctorProfileForPatient() {
     )
 }
 
-const RequestAppointmentModal = ({ handleClick, isRequestAppointment,requestAppointmentData }) => {
+const RequestAppointmentModal = ({ handleClick, isRequestAppointment, requestAppointmentData }) => {
     const dispatch = useDispatch()
-    const [disable,setDisable] = useState(false)
+    const [disable, setDisable] = useState(false)
     const submitHandler = () => {
         setDisable(!disable)
         console.log(requestAppointmentData)
         dispatch(requestAppointmentAsync(requestAppointmentData))
-        setTimeout(()=>{
+        setTimeout(() => {
             handleClick()
-        },1000)
+        }, 1000)
     }
 
-    useEffect(() => { 
+    useEffect(() => {
 
     }, [dispatch])
 

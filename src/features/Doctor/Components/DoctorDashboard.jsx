@@ -13,6 +13,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Availability } from './DoctorRegister';
 
 export function DoctorDashBoard() {
+
   const dashboard = useSelector(doctorDashBoard)
   const [todaysAppointmentCount, setTodaysAppCount] = useState(0)
   const dispatch = useDispatch()
@@ -44,7 +45,6 @@ export function DoctorDashBoard() {
   }, [dispatch])
   return (
     <>
-      {/* end sidenav */}
       {dashboard &&
         <div className='flex flex-col'>
 

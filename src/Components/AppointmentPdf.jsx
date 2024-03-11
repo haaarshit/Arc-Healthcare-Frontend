@@ -102,8 +102,8 @@ function AppointmentPdf({ data, doctorData }) {
             <Page style={styles.page}>
                 <Text style={styles.header}>Health ARc</Text>
                 <View style={styles.row}>
-                    <Text style={styles.rowItem}>Doctor Name: {doctorData.doctorInfo?.personalInfo?.firstName} {doctorData.doctorInfo?.personalInfo?.lastName}</Text>
-                    <Text style={styles.rowItem}>Email: {doctorData.doctorInfo?.email}</Text>
+                    <Text style={styles.rowItem}>Doctor Name: {doctorData?.doctorInfo?.personalInfo?.firstName} {doctorData?.doctorInfo?.personalInfo?.lastName}</Text>
+                    <Text style={styles.rowItem}>Email: {doctorData?.doctorInfo?.email}</Text>
                 </View>
                 <View style={styles.row}>
                     <Text style={styles.rowItem}>Patient Name: {data.patientName}</Text>

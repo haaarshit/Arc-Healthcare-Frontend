@@ -34,7 +34,7 @@ function App() {
           <Route path='/patient/appointment/:id' element={<AppointmentPagePatient/>} />
           <Route path='/patient/login' element={<PatientLogin />} />
           <Route path='/patient/register' element={<PatientRegister />} />
-          <Route path='/patient/dashboard' element={<div>Patient Dashboard</div>} />
+          <Route path='/patient/dashboard' element={<PatientDashBoard/>} />
         </Routes>
 
       </BrowserRouter>

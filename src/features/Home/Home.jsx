@@ -12,17 +12,24 @@ import {
     Typography,
     Button,
 } from "@material-tailwind/react";
+import { useForm } from 'react-hook-form'
 
 
 function Home() {
+
+    const { control, register, handleSubmit, formState: { errors }, setValue } = useForm();
+    const onSubmit = (data) => {
+        console.log(data.cityname)
+    }
+
     const doctors = useSelector(getAllDoctors)
     const dispatch = useDispatch()
     const isPatientLoggedIn = useSelector(isPatient)
     const isDoctorLoggedIn = useSelector(isDoctor)
     useEffect(() => {
         dispatch(getAllDoctorAsync())
-            dispatch(getDoctorDashboardAsync())
-            dispatch(getPatientDashboardAsync())
+        dispatch(getDoctorDashboardAsync())
+        dispatch(getPatientDashboardAsync())
 
     }, [])
     return (
@@ -72,13 +79,17 @@ function Home() {
 
                         {isPatientLoggedIn &&
                             <div className="flex flex-col items-center ">
+
+                                {/* Filter doctor by city */}
+
+
                                 <h2
                                     className="font-bold text-3xl sm:text-4xl sm:text-start text-center text-dark mt-12 mb-6"
                                 >
                                     Connect with best  <span className='text-[#7371fc]'>Doctors</span>
                                 </h2>
+                                <FilterDoctorByCityForm onSubmit={onSubmit} register={register} handleSubmit={handleSubmit} />
                                 <div className="flex flex-wrap justify-between px-2">
-
                                     <DoctorCards doctors={doctors} />
                                 </div>
 
@@ -130,6 +141,48 @@ const DoctorCards = ({ doctors }) => {
         </>
     )
 
+}
+
+
+const FilterDoctorByCityForm = ({ register, handleSubmit, onSubmit }) => {
+
+    return (
+        // <form onSubmit={handleSubmit(onSubmit)} >
+        //     <div className='mb-4'>
+        //     <h1>Filter By city</h1>
+        //         <input
+        //             type="text"
+        //             placeholder='enter city'
+        //             {...register(`cityName`)}
+        //             className="mr-2 focus:ring-blue-500 focus:ring-2"
+        //         />
+        //     </div>
+        // </form>
+        // <form onSubmit={handleSubmit(onSubmit)} className='flex'>
+        //     <div className='mb-4 flex w-full'>
+        //         <input
+        //             type="text"
+        //             placeholder='Filter Doctor by City'
+        //             {...register(`cityName`)}
+        //             className="w-full rounded-md shadow-sm border border-gray-300 px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+        //         />
+        //     </div>
+        //     <button className='bg-[#7371fc] text-white rounded-sm text-sm px-3 py-2' type='submit'>Search</button>
+        // </form>
+        <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col space-y-2'>  <div className='flex w-full items-center'>
+            <input
+                type="text"
+                placeholder='Filter Doctor by City'
+                {...register(`cityname`)}
+                className="w-full rounded-md shadow-sm border border-gray-300 px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+        </div>
+
+            <button className='bg-indigo-600 text-white rounded-md px-4 py-2 hover:bg-indigo-700'>Search</button>
+
+        </form>
+
+    )
 }
 
 export default Home

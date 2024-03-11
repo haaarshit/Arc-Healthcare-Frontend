@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createAppointmet, createDoctor, fetchAllDoctors, fetchDoctorDashboard, fetchPatientProfile, loginDoctor, logoutDoctor, updateAppointment, updateAvailability } from './doctorAPI';
+import { createAppointmet, createDoctor, fetchAllDoctors, fetchDoctorDashboard, fetchPatientProfile, getDoctorByCity, loginDoctor, logoutDoctor, updateAppointment, updateAvailability } from './doctorAPI';
 
 const initialState = {
     isDoctor: false,
@@ -47,7 +47,7 @@ export const getAllDoctorAsync = createAsyncThunk(
 export const getDoctorByCityAsync = createAsyncThunk(
     'doctor/getDoctorByCity',
     async (data) => {
-        const response = await createDoctor(data);
+        const response = await getDoctorByCity(data);
         return response.data;
     }
 );
@@ -238,6 +238,19 @@ export const doctorSlice = createSlice({
             .addCase(createAppointmetAsync.fulfilled, (state, action) => {
                 state.status = 'idle';
                 state.isPanding = false
+            })
+            // create appointment 
+            .addCase(getDoctorByCityAsync.pending, (state) => {
+                state.status = 'loading';
+                state.isPanding = true
+            })
+            .addCase(getDoctorByCityAsync.rejected, (state, action) => {
+                state.isPanding = false
+            })
+            .addCase(getDoctorByCityAsync.fulfilled, (state, action) => {
+                state.status = 'idle';
+                state.isPanding = false
+                state.allDoctors = action.payload
             })
             ;
     },

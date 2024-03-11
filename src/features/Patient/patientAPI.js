@@ -126,6 +126,7 @@ export const getDoctorProfile = async (id) => {
   }
   );
 }
+
 export const requestAppointment = async (data) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -147,3 +148,4 @@ export const requestAppointment = async (data) => {
   }
   );
 }
+

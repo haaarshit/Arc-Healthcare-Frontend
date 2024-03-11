@@ -131,38 +131,65 @@ function AppointmentDoctor() {
                                         <div className="grid md:grid-cols-2 text-sm">
                                             <div className="grid grid-cols-2">
                                                 <div className="px-4 py-2 font-semibold">Name</div>
-                                                <div className="px-4 py-2">{patient.patientInfo.personalInfo.firstName}    {patient.patientInfo.personalInfo.lastName}</div>
+                                                <div className="px-4 py-2">{patient?.patientInfo?.personalInfo.firstName}    {patient.patientInfo.personalInfo.lastName}</div>
                                             </div>
 
                                             <div className="grid grid-cols-2">
                                                 <div className="px-4 py-2 font-semibold">Gender</div>
-                                                <div className="px-4 py-2">{patient.patientInfo.personalInfo.gender}</div>
+                                                <div className="px-4 py-2">{patient?.patientInfo?.personalInfo?.gender}</div>
                                             </div>
                                             <div className="grid grid-cols-2">
                                                 <div className="px-4 py-2 font-semibold">Contact No.</div>
-                                                <div className="px-4 py-2">  <a href="whatsapp://send?abid=phonenumber&text=Hello%2C%20World!"> {patient.patientInfo.phone}   </a></div>
+                                                <div className="px-4 py-2">  <a href="whatsapp://send?abid=phonenumber&text=Hello%2C%20World!"> {patient?.patientInfo?.phone}   </a></div>
 
                                             </div>
                                             <div className="grid grid-cols-2">
                                                 <div className="px-4 py-2 font-semibold">Address</div>
-                                                <div className="px-4 py-2">{patient.patientInfo.personalInfo.address.street}, {patient.patientInfo.personalInfo.address.city}, {patient.patientInfo.personalInfo.address.state}</div>
+                                                <div className="px-4 py-2">{patient?.patientInfo?.personalInfo?.address.street}, {patient?.patientInfo?.personalInfo?.address.city}, {patient.patientInfo.personalInfo.address.state}</div>
                                             </div>
                                             <div className="grid grid-cols-2">
                                                 <div className="px-4 py-2 font-semibold">Nationality</div>
-                                                <div className="px-4 py-2">{patient.patientInfo.personalInfo.nationality}</div>
+                                                <div className="px-4 py-2">{patient?.patientInfo?.personalInfo?.nationality}</div>
                                             </div>
                                             <div className="grid grid-cols-2">
                                                 <div className="px-4 py-2 font-semibold">Email</div>
                                                 <div className="px-4 py-2">
-                                                    <a className="text-blue-800" href={`mailto:${patient.patientInfo.email}`}>
-                                                        {patient.patientInfo.email}
+                                                    <a className="text-blue-800" href={`mailto:${patient?.patientInfo?.email}`}>
+                                                        {patient?.patientInfo?.email}
                                                     </a>
                                                 </div>
                                             </div>
 
                                             <div className="grid grid-cols-2">
                                                 <div className="px-4 py-2 font-semibold">Birthday</div>
-                                                <div className="px-4 py-2">{patient.patientInfo.personalInfo.dateOfBirth}</div>
+                                                <div className="px-4 py-2">{patient?.patientInfo?.personalInfo?.dateOfBirth}</div>
+                                            </div>
+                                            <div className="grid grid-cols-2">
+                                                <div className="px-4 py-2 font-semibold">Blood Group</div>
+                                                <div className="px-4 py-2">{patient?.patientInfo?.bloodType}</div>
+                                            </div>
+                                            <div className="grid grid-cols-2">
+                                                <div className="px-4 py-2 font-semibold">Height</div>
+                                                <div className="px-4 py-2">{patient?.patientInfo?.height} cm</div>
+                                            </div>
+                                            <div className="grid grid-cols-2">
+                                                <div className="px-4 py-2 font-semibold">Weight</div>
+                                                <div className="px-4 py-2">{patient?.patientInfo?.weight} cm</div>
+                                            </div>
+                                            <div className="grid grid-cols-2">
+                                                {patient?.patientInfo?.allergies &&
+                                                    <>
+                                                        <div className="px-4 py-2 font-semibold">Allergies</div>
+                                                        <div className="px-4 py-2">
+                                                            {patient?.patientInfo?.allergies.map(a => (
+                                                                <div className='flex flex-col'>
+                                                                    {a.allergen}
+                                                                </div>
+                                                            ))
+
+                                                            } </div>
+                                                    </>
+                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -205,9 +232,9 @@ function AppointmentDoctor() {
                                                         <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                                                             {
                                                                 e.id !== id ?
-                                                                <Link to={`/doctor/appointment/${e.id}`} className='bg-[#7371fc] text-white rounded-sm text-sm px-2 py-1' >Visit</Link>
-                                                                :
-                                                                <p>Current Appointment</p>
+                                                                    <Link to={`/doctor/appointment/${e.id}`} className='bg-[#7371fc] text-white rounded-sm text-sm px-2 py-1' >Visit</Link>
+                                                                    :
+                                                                    <p>Current Appointment</p>
                                                             }
                                                         </td>
                                                         <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">

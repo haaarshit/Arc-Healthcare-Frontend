@@ -61,6 +61,7 @@ export const requestAppointmentAsync = createAsyncThunk(
   }
 );
 
+
 export const patientSlice = createSlice({
   name: 'patient',
   initialState,
@@ -134,7 +135,8 @@ export const patientSlice = createSlice({
       .addCase(requestAppointmentAsync.fulfilled, (state, action) => {
         state.isPending = false;
         state.status = 'idle';
-      });
+      })
+      ;
   },
 });
 export const { increment, decrement, incrementByAmount } = patientSlice.actions;

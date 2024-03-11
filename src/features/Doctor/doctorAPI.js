@@ -132,10 +132,16 @@ export const getDoctorByCity = async (city) => {
 
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await fetch(requestUrl + "/api/public/doctor/city?cityname=" + city, {
-        method: "GET",
+      const token = getCookie('token')
+      const response = await axios.get(requestUrl + "/api/auth/doctor/city?cityname=" + city, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Access-Control-Allow-Origin': '*',
+        },
+        withCredentials: false
       })
-      resolve({ response })
+      console.log(response.data)
+      resolve({ data: response.data })
     }
     catch (e) {
       reject(e)
@@ -227,7 +233,6 @@ export const updateAppointment = async (data) => {
 
 
 export const updateAvailability = async (data) => {
-  console.log(data.availability)
 
   return new Promise(async (resolve, reject) => {
     data.availability.availableDays = extractDays(data)
@@ -302,4 +307,3 @@ export const createAppointmet = async (data) => {
   }
   );
 }
-
