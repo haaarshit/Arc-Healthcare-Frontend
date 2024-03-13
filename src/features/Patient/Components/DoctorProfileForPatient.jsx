@@ -24,6 +24,8 @@ function DoctorProfileForPatient() {
             setRequestAppointmentData({
                 patientId: dashboardPatient.patientInfo.id,
                 doctorId: DoctorProfile.doctorInfo.id,
+                patientName: dashboardPatient.patientInfo?.personalInfo.firstName + dashboardPatient.patientInfo?.personalInfo.lastName,
+                patientPhone: dashboardPatient.patientInfo.phone
             })
         }
     }
@@ -132,6 +134,12 @@ function DoctorProfileForPatient() {
                                                         {DoctorProfile.doctorInfo?.personalInfo.dateOfBirth}
                                                     </div>
                                                 </div>
+                                                <div className="grid grid-cols-2">
+                                                    <div className="px-4 py-2 font-semibold">Consultation Fees</div>
+                                                    <div className="px-4 py-2">
+                                                        <strong>₹</strong> {DoctorProfile.doctorInfo?.consultationFees}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -165,8 +173,13 @@ function DoctorProfileForPatient() {
                                                     {
                                                         DoctorProfile.doctorInfo?.professionalInfo?.workExperience.map((experience) => (
                                                             <li>
-                                                                <div className="text-teal-600">{experience.position} at {experience.hospitalName}</div>
-                                                                <div className="text-gray-500 text-xs">from  {experience.startDate} to {experience.endDate ? experience.endDate : "Current"}</div>
+                                                                {
+                                                                    experience.position &&
+                                                                    <>
+                                                                        <div className="text-teal-600">{experience.position} at {experience.hospitalName}</div>
+                                                                        <div className="text-gray-500 text-xs">from  {experience.startDate.split('-')[0]} to {experience.endDate ? experience.endDate.split('-')[0] : "Current"}</div>
+                                                                    </>
+                                                                }
                                                             </li>
 
                                                         ))
@@ -202,8 +215,12 @@ function DoctorProfileForPatient() {
                                                     {
                                                         DoctorProfile.doctorInfo?.professionalInfo?.qualifications.map((qualification) => (
                                                             <li>
-                                                                <div className="text-teal-600">{qualification.degree} from {qualification.university}</div>
-                                                                <div className="text-gray-500 text-xs">Passing Year {qualification.year ? qualification.year : "Current"}</div>
+                                                                {qualification.degree &&
+                                                                    <>
+                                                                        <div className="text-teal-600">{qualification.degree} from {qualification.university}</div>
+                                                                        <div className="text-gray-500 text-xs">Passing Year {qualification.year ? qualification.year : "Current"}</div>
+                                                                    </>
+                                                                }
                                                             </li>
 
                                                         ))
@@ -219,7 +236,7 @@ function DoctorProfileForPatient() {
                             </div>
 
                             <ImageModal avatar={DoctorProfile.doctorInfo.avatar} handleClick={handleClick} isAvatarModal={isAvatarModal} />
-                            <RequestAppointmentModal handleClick={handleIsRequestAppointment} isRequestAppointment={isRequestAppointment} requestAppointmentData={requestAppointmentData} />
+                            <RequestAppointmentModal handleClick={handleIsRequestAppointment} isRequestAppointment={isRequestAppointment} requestAppointmentData={requestAppointmentData} setRequestAppointmentData={setRequestAppointmentData} />
                         </div>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 w-full">
                             <div className="p-6 relative flex flex-col min-w-0 mb-4 lg:mb-0 break-words bg-gray-50 dark:bg-gray-800 w-full shadow-lg rounded ">
@@ -316,13 +333,22 @@ function DoctorProfileForPatient() {
     )
 }
 
-const RequestAppointmentModal = ({ handleClick, isRequestAppointment, requestAppointmentData }) => {
+const RequestAppointmentModal = ({ handleClick, isRequestAppointment, requestAppointmentData, setRequestAppointmentData }) => {
     const dispatch = useDispatch()
     const [disable, setDisable] = useState(false)
+    const [allergy, setAllergy] = useState('')
     const submitHandler = () => {
         setDisable(!disable)
-        console.log(requestAppointmentData)
-        dispatch(requestAppointmentAsync(requestAppointmentData))
+        const requestData = {
+            patientId: requestAppointmentData.patientId,
+            doctorId: requestAppointmentData.doctorId,
+            patientName: requestAppointmentData.patientName,
+            patientPhone: requestAppointmentData.patientPhone,
+            allergy
+
+        }
+        console.log(requestData)
+        dispatch(requestAppointmentAsync(requestData))
         setTimeout(() => {
             handleClick()
         }, 1000)
@@ -343,6 +369,9 @@ const RequestAppointmentModal = ({ handleClick, isRequestAppointment, requestApp
             <Box className='relative border  border-none bg-white sm:w-auto  w-[90%] flex justify-center px-2'>
                 <div className='sm:w-[25vw] w-[90vw] flex flex-col justify-center items-center p-2'>
                     <h1>Request An Appointment to Doctor</h1>
+                    <input type="text" placeholder='Enter problem you have' onChange={e => {
+                        setAllergy(e.target.value)
+                    }} />
                     <button disabled={disable} className='bg-[#7371fc] text-white rounded-sm text-sm px-2 py-1 w-[90px] mt-3' onClick={submitHandler}>Request</button>
                 </div>
             </Box>

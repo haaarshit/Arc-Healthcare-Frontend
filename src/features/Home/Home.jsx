@@ -2,7 +2,7 @@ import { Avatar } from '@material-tailwind/react'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { getAllDoctorAsync, getAllDoctors, getDoctorDashboardAsync, isDoctor } from '../Doctor/doctorSlice'
+import { getAllDoctorAsync, getAllDoctors, getDoctorByCityAsync, getDoctorDashboardAsync, isDoctor } from '../Doctor/doctorSlice'
 import { getPatientDashboardAsync, isPatient } from '../Patient/patientSlice'
 import {
     Card,
@@ -20,6 +20,7 @@ function Home() {
     const { control, register, handleSubmit, formState: { errors }, setValue } = useForm();
     const onSubmit = (data) => {
         console.log(data.cityname)
+        dispatch(getDoctorByCityAsync(data.cityname))
     }
 
     const doctors = useSelector(getAllDoctors)
@@ -31,7 +32,7 @@ function Home() {
         dispatch(getDoctorDashboardAsync())
         dispatch(getPatientDashboardAsync())
 
-    }, [])
+    }, [dispatch])
     return (
         <div className='overflow-hidden'>
             <>
@@ -111,11 +112,12 @@ const DoctorCards = ({ doctors }) => {
             {
                 doctors && doctors.map(doctor =>
                     <>
-                        <Card className="mx-2 my-2 w-full px-4 sm:w-[22vw] rounded-[10px] mb-4 ">
+                        <Card className="mx-2 my-2 w-full px-4 sm:w-[22vw] rounded-[10px] my-4 ">
                             <CardHeader color="blue-gray" className="relative ">
                                 <img
                                     src={doctor.avatar}
                                     alt="card-image"
+                                    className='h-[30vh]'
                                 />
                             </CardHeader>
                             <CardBody>
@@ -147,28 +149,6 @@ const DoctorCards = ({ doctors }) => {
 const FilterDoctorByCityForm = ({ register, handleSubmit, onSubmit }) => {
 
     return (
-        // <form onSubmit={handleSubmit(onSubmit)} >
-        //     <div className='mb-4'>
-        //     <h1>Filter By city</h1>
-        //         <input
-        //             type="text"
-        //             placeholder='enter city'
-        //             {...register(`cityName`)}
-        //             className="mr-2 focus:ring-blue-500 focus:ring-2"
-        //         />
-        //     </div>
-        // </form>
-        // <form onSubmit={handleSubmit(onSubmit)} className='flex'>
-        //     <div className='mb-4 flex w-full'>
-        //         <input
-        //             type="text"
-        //             placeholder='Filter Doctor by City'
-        //             {...register(`cityName`)}
-        //             className="w-full rounded-md shadow-sm border border-gray-300 px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-        //         />
-        //     </div>
-        //     <button className='bg-[#7371fc] text-white rounded-sm text-sm px-3 py-2' type='submit'>Search</button>
-        // </form>
         <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col space-y-2'>  <div className='flex w-full items-center'>
             <input
                 type="text"
@@ -178,7 +158,7 @@ const FilterDoctorByCityForm = ({ register, handleSubmit, onSubmit }) => {
             />
         </div>
 
-            <button className='bg-indigo-600 text-white rounded-md px-4 py-2 hover:bg-indigo-700'>Search</button>
+            <button type='submit' className='bg-indigo-600 text-white rounded-md px-4 py-2 hover:bg-indigo-700'>Search</button>
 
         </form>
 

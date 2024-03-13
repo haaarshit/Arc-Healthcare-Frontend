@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { createAppointmetAsync, doctorDashBoard, getDoctorDashboardAsync, updateAppointmentAsync, updateAvailabilityAsync } from '../doctorSlice';
+import { addQualificationAsync, addWorkExperienceAsync, createAppointmetAsync, doctorDashBoard, getDoctorDashboardAsync, rejectAppointmetAsync, updateAppointmentAsync, updateAvailabilityAsync } from '../doctorSlice';
 import { Box, Modal, TextField } from '@mui/material';
 import ImageModal from '../../../Components/ImageModal';
 import { extractTime } from '../../../Utils/UtilFunctions';
@@ -11,7 +11,7 @@ import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { useFieldArray, useForm } from "react-hook-form";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Availability } from './DoctorRegister';
-
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 export function DoctorDashBoard() {
 
   const dashboard = useSelector(doctorDashBoard)
@@ -20,16 +20,26 @@ export function DoctorDashBoard() {
   const [isAvatarModal, setAvatarModal] = useState(false)
   const [isUpdateAvaibility, setUpdateAvaibility] = useState(false)
   const [isAppointAppointment, setAppointAppointment] = useState(false)
+  const [isAddQualification, setAddQualification] = useState(false)
+  const [isAddWorkExperience, setAddWorkExperience] = useState(false)
   const [appointmentRequest, setAppointmentRequest] = useState({})
 
   const handleClick = () => { setAvatarModal(!isAvatarModal) }
   const handleIsAvaibilityClick = () => { setUpdateAvaibility(!isUpdateAvaibility) }
   const handleIsAppointAppointment = () => { setAppointAppointment(!isAppointAppointment) }
+  const handleIsAddQualification = () => { setAddQualification(!isAddQualification) }
+  const handleIsAddWorkExperience = () => { setAddWorkExperience(!isAddWorkExperience) }
 
   const statusColor = {
     pending: "green",
     completed: "green",
     rejeted: "red"
+  }
+
+
+  const rejectAppointment = (id) => {
+    console.log(id)
+    dispatch(rejectAppointmetAsync(id))
   }
 
   useEffect(() => {
@@ -163,13 +173,25 @@ export function DoctorDashBoard() {
                             </svg>
                           </span>
                           <span className="tracking-wide">Experience</span>
+                          <div className="group relative flex"> {/* Wrap in a group for hover styles */}
+                          <button onClick={handleIsAddWorkExperience}>
+                            <EditOutlinedIcon className="cursor-pointer text-gray-500 hover:text-blue-500 transition duration-300" />
+                          </button>
+                            <span className="absolute invisible group-hover:visible text-sm text-gray-700 font-sm px-2 py-1 rounded bg-gray-200 shadow-sm top-full left-0">
+                              Add Experience
+                            </span>
+                          </div>
                         </div>
                         <ul className="list-inside space-y-2">
                           {dashboard.doctorInfo?.professionalInfo?.workExperience?.map((e) =>
 
                             <li key={e.startDate}>
-                              <div className="text-teal-600">{e.position} at {e.hospitalName}</div>
-                              <div className="text-gray-500 text-xs">{e.startDate} to {e.endDate ? e.endDate : 'Cureent'}  </div>
+                              {
+                                e.position &&
+                                <>
+                                  <div className="text-teal-600">{e.position} at {e.hospitalName}</div>
+                                  <div className="text-gray-500 text-xs">{e.startDate.split('-')[0]} to {e.endDate ? e.endDate.split('-')[0] : 'Cureent'}  </div>
+                                </>}
                             </li>
                           )
                           }
@@ -199,13 +221,26 @@ export function DoctorDashBoard() {
                             </svg>
                           </span>
                           <span className="tracking-wide">Education</span>
+                          <div className="group relative flex" > {/* Wrap in a group for hover styles */}
+                          <button onClick={handleIsAddQualification}>
+                            <EditOutlinedIcon className="cursor-pointer text-gray-500 hover:text-blue-500 transition duration-300"  />
+                          </button>
+                            <span className="absolute invisible group-hover:visible text-sm text-gray-700 font-sm px-2 py-1 rounded bg-gray-200 shadow-sm top-full left-0">
+                              Add Qualification
+                            </span>
+                          </div>
                         </div>
                         <ul className="list-inside space-y-2">
                           {dashboard.doctorInfo?.professionalInfo?.qualifications.map((e) =>
 
+
                             <li>
-                              <div className="text-teal-600">{e.degree} from {e.university}</div>
-                              <div className="text-gray-500 text-xs">Passing year : {e.year}   </div>
+                              {e.degree &&
+                                <>
+                                  <div className="text-teal-600">{e.degree} from {e.university}</div>
+                                  <div className="text-gray-500 text-xs">Passing Year {e.year ? e.year : "Current"}</div>
+                                </>
+                              }
                             </li>
                           )
                           }
@@ -226,7 +261,7 @@ export function DoctorDashBoard() {
                     <div className="flex items-center mb-1">
                       <div className="text-2xl font-semibold">{todaysAppointmentCount}</div>
                     </div>
-                    <div className="text-sm font-medium text-gray-400">Appointments Today</div>
+                    <div className="text-sm font-medium text-gray-400"> Today's Appointment</div>
                   </div>
                   <div className="dropdown">
                     <button
@@ -377,8 +412,8 @@ export function DoctorDashBoard() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            <div className="bg-white border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <div className="bg-white border border-gray-100 col-span-2 shadow-md shadow-black/5 p-6 rounded-md">
               <div className="flex justify-between mb-4 items-start">
                 <div className="font-medium">Appointment Requests</div>
               </div>
@@ -390,7 +425,19 @@ export function DoctorDashBoard() {
                         Date
                       </th>
                       <th className="px-4 bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-100 align-middle border border-solid border-gray-200 dark:border-gray-500 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                        Appointment
+                        Patient Name
+                      </th>
+                      <th className="px-4 bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-100 align-middle border border-solid border-gray-200 dark:border-gray-500 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                        Allergy
+                      </th>
+                      <th className="px-4 bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-100 align-middle border border-solid border-gray-200 dark:border-gray-500 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                        Phone Number
+                      </th>
+                      <th className="px-4 bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-100 align-middle border border-solid border-gray-200 dark:border-gray-500 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                        Schedule
+                      </th>
+                      <th className="px-4 bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-100 align-middle border border-solid border-gray-200 dark:border-gray-500 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                        Reject
                       </th>
                     </tr>
                   </thead>
@@ -405,10 +452,31 @@ export function DoctorDashBoard() {
                             </div>
                           </td>
                           <td className="py-2 px-4 border-b border-b-gray-50">
+                            <div className="text-sm font-medium text-gray-400">
+                              {e.patientName}
+                            </div>
+                          </td>
+                          <td className="py-2 px-4 border-b border-b-gray-50">
+                            <div className="text-sm font-medium text-gray-400">
+                              {e.allergy}
+                            </div>
+                          </td>
+                          <td className="py-2 px-4 border-b border-b-gray-50">
+                            <div className="text-sm font-medium text-gray-400">
+                              {e.patientPhone}
+                            </div>
+                          </td>
+                          <td className="py-2 px-4 border-b border-b-gray-50">
                             <button className='bg-[#7371fc] text-white rounded-sm text-sm p-2' onClick={() => {
                               setAppointmentRequest(e)
                               handleIsAppointAppointment()
-                            }}>Appoint Appointment</button>
+                            }}>Schedule </button>
+                          </td>
+                          <td className="py-2 px-4 border-b border-b-gray-50">
+                            <button className='bg-red-500 text-white rounded-sm text-sm p-2' onClick={() => {
+                              setAppointmentRequest(e)
+                              rejectAppointment(e.id)
+                            }}>Reject </button>
                           </td>
                         </tr>
                       ))
@@ -441,6 +509,8 @@ export function DoctorDashBoard() {
           <ImageModal isAvatarModal={isAvatarModal} handleClick={handleClick} avatar={dashboard.doctorInfo?.avatar} />
           <UpdateAvailibity handleClick={handleIsAvaibilityClick} isUpdateAvaibility={isUpdateAvaibility} />
           <CreateAppointmet handleClick={handleIsAppointAppointment} isCreateAppointment={isAppointAppointment} appointmentRequest={appointmentRequest} />
+          <AddQualification handleClick={handleIsAddQualification} isAddQualification={isAddQualification}   />
+          <AddWorkExperience handleClick={handleIsAddWorkExperience} isAddWorkExperience={isAddWorkExperience}/>
           {/* End Content */}
         </div>
       }
@@ -490,17 +560,17 @@ const CreateAppointmet = ({ handleClick, isCreateAppointment, appointmentRequest
   const submitHandler = (data) => {
     console.log(data)
     const req = {
-      requestData:data,
-      id:appointmentRequest.id
+      requestData: data,
+      id: appointmentRequest.id
     }
     console.log(req)
-    dispath(createAppointmetAsync( req))
+    dispath(createAppointmetAsync(req))
   }
-  useEffect(()=>{
+  useEffect(() => {
 
     setValue('patientId', appointmentRequest.patientId)
     setValue('doctorId', appointmentRequest.doctorId)
-  },[isCreateAppointment])
+  }, [isCreateAppointment])
 
   return (
     <Modal
@@ -529,6 +599,152 @@ const CreateAppointmet = ({ handleClick, isCreateAppointment, appointmentRequest
           <div className="md:flex mb-8">
             <div className="md:flex-1 mt-2 mb:mt-0 md:px-3">
               <button className='bg-[#7371fc] text-white rounded-sm text-sm p-2'>Appoint Appointment</button>
+            </div>
+          </div>
+        </form>
+      </Box>
+    </Modal>
+  )
+}
+
+
+// create Appointment modal
+const AddQualification = ({ handleClick, isAddQualification }) => {
+  const { setValue, handleSubmit, control, register, formState: { errors } } = useForm()
+
+  const dispath = useDispatch()
+  const submitHandler = (data) => {
+    dispath(addQualificationAsync(data))
+    console.log(data)
+    setTimeout(()=>{handleClick()},1000)
+  }
+  useEffect(() => {
+
+
+  }, [])
+
+  return (
+    <Modal
+      open={isAddQualification}
+      onClose={handleClick}
+      aria-labelledby="parent-modal-title"
+      aria-describedby="parent-modal-description"
+      className='flex items-center justify-center p-1 '
+    >
+      <Box className='relative border  border-none bg-white sm:w-[25vw]   w-[90%] flex justify-center px-2 '>
+        <form onSubmit={handleSubmit(submitHandler)} className='flex justify-center items-center flex-col p-2'>
+          <div className='mb-4'>
+            <input
+              {...register(`degree`)}
+              type="text"
+              id={`endDate`}
+              placeholder="Degree"
+              className="px-3 py-2 rounded-md border focus:outline-none focus:ring-blue-500 focus:ring-1"
+            />
+
+          </div>
+          <div className='mb-4'>
+            <input
+              {...register(`university`)}
+              type="text"
+              id={`endDate`}
+              placeholder="University Name"
+              className="px-3 py-2 rounded-md border focus:outline-none focus:ring-blue-500 focus:ring-1"
+            />
+
+          </div>
+          <div className='mb-4'>
+            <input
+              {...register(`year`)}
+              type="number"
+              id={`endDate`}
+              placeholder="Graduation year"
+              className="px-3 py-2 rounded-md border focus:outline-none focus:ring-blue-500 focus:ring-1"
+            />
+
+          </div>
+          <div className="md:flex mb-8">
+            <div className="md:flex-1 mt-2 mb:mt-0 md:px-3">
+              <button  className='bg-[#7371fc] text-white rounded-sm text-sm p-2'>Add Qualification</button>
+            </div>
+          </div>
+        </form>
+      </Box>
+    </Modal>
+  )
+}
+
+
+// create Appointment modal
+const AddWorkExperience = ({ handleClick, isAddWorkExperience }) => {
+  const { setValue, handleSubmit, control, register, formState: { errors } } = useForm()
+
+  const dispath = useDispatch()
+  const submitHandler = (data) => {
+    dispath(addWorkExperienceAsync(data))
+    console.log(data)
+    setTimeout(()=>{handleClick()},1000)
+  }
+  useEffect(() => {
+
+
+  }, [])
+
+  return (
+    <Modal
+      open={isAddWorkExperience}
+      onClose={handleClick}
+      aria-labelledby="parent-modal-title"
+      aria-describedby="parent-modal-description"
+      className='flex items-center justify-center p-1 '
+    >
+      <Box className='relative border  border-none bg-white sm:w-[25vw]   w-[90%] flex justify-center px-2 '>
+        <form onSubmit={handleSubmit(submitHandler)} className='flex justify-center items-center flex-col p-2'>
+          <div className='mb-4'>
+            <input
+              {...register(`hospitalName`)}
+              type="text"
+              id={`endDate`}
+              placeholder="Hospital Name"
+              className="px-3 py-2 rounded-md border focus:outline-none focus:ring-blue-500 focus:ring-1"
+            />
+
+          </div>
+          <div className='mb-4'>
+            <input
+              {...register(`position`)}
+              type="text"
+              id={`endDate`}
+              placeholder="Postion you worked at"
+              className="px-3 py-2 rounded-md border focus:outline-none focus:ring-blue-500 focus:ring-1"
+            />
+
+          </div>
+          <div className='mb-4 flex flex-col text-center'>
+            <label htmlFor="">Enter Start Date</label>
+            <input
+              {...register(`startDate`)}
+              type="date"
+              id={`endDate`}
+              placeholder="Start Year"
+              className="px-3 py-2 rounded-md border focus:outline-none focus:ring-blue-500 focus:ring-1"
+            />
+
+          </div>
+          <div className='mb-4 flex flex-col text-center'>
+            <label htmlFor="">Enter End Date</label>
+            <input
+              {...register(`endDate`)}
+              type="date"
+              id={`endDate`}
+              placeholder="End year"
+              className="px-3 py-2 rounded-md border focus:outline-none focus:ring-blue-500 focus:ring-1"
+            />
+
+          </div>
+          <div className="md:flex mb-8">
+            <div className="md:flex-1 mt-2 mb:mt-0 md:px-3">
+              <button  className='bg-[#7371fc] text-white rounded-sm text-sm p-2'>Add Work Experience</button>
             </div>
           </div>
         </form>

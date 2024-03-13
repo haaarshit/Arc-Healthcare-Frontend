@@ -3,7 +3,7 @@ import { Typography, useSelect } from '@material-tailwind/react';
 import React, { useEffect, useState } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
-import { createDoctorAsync, isDoctor, doctorData } from '../doctorSlice';
+import { createDoctorAsync, isDoctor, doctorData, isDoctorPending } from '../doctorSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -13,6 +13,7 @@ import { LocalizationProvider, TimePicker, renderTimeViewClock } from '@mui/x-da
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { TextField } from '@mui/material';
 import { extractTime } from '../../../Utils/UtilFunctions';
+import { Spinner } from "@material-tailwind/react";
 
 function DoctorRegister() {
   const dispatch = useDispatch()
@@ -20,23 +21,21 @@ function DoctorRegister() {
   const { control, register, handleSubmit, formState: { errors }, setValue } = useForm();
   const isDoctorRegistered = useSelector(isDoctor)
   const doctorInfo = useSelector(doctorData)
+  const isPending = useSelector(isDoctorPending)
   const navigate = useNavigate()
 
 
   const onSubmit = async (data) => {
     console.log(data);
-    // const file = data.avatar[0];
     dispatch(createDoctorAsync(data))
-
   };
 
   useEffect(() => {
     if (isDoctorRegistered === true && doctorInfo !== null) {
-      navigate('/')
-
+      navigate('/doctor/login')
       console.log("isregistered______________")
     }
-  }, [isDoctorRegistered])
+  }, [isDoctorRegistered, isPending])
 
   return (
     <div className="flex flex-col items-center justify-center bg-gray-100 rounded-[10px] py-2 bg-gray-200">
@@ -196,10 +195,16 @@ function DoctorRegister() {
               <h1 className="block text-gray-700 md:text-md text-xl font-bold mb-2">Availability</h1>
               <Availability register={register} errors={errors} control={control} setValue={setValue} />
               <button
+                disabled={isPending}
                 type="submit"
                 className="my-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 w-full rounded focus:outline-none focus:shadow-outline"
               >
-                Register
+                {
+                  !isPending ?
+                    'Register'
+                    :
+                    <Spinner />
+                }
               </button>
             </form>
           </div>

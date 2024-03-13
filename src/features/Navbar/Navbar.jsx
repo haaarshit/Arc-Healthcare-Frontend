@@ -110,7 +110,7 @@ function MyNavbar() {
                     {!isDoctorLogin && !isPatientLogin ?
                         <div>
                             <Link to='/patient/login' className=" hidden lg:inline-block p-2  hover:bg-[#7371fc]  rounded-full hover:text-white duration-200">
-                                User Login <LoginIcon />
+                                Patient Login <LoginIcon />
                             </Link>
                             <Link to='/doctor/login' className="hidden lg:inline-block p-2  hover:bg-[#7371fc]  rounded-full hover:text-white duration-200">
                                 Doctor Login <LoginIcon />
@@ -168,7 +168,7 @@ function MyNavbar() {
                         {/* 
                             <div>
                                 <Link className=" p-2  hover:bg-[#7371fc]  rounded-full hover:text-white duration-200">
-                                    User Login <LoginIcon />
+                                    Patient Login <LoginIcon />
                                 </Link>
                                 <Link to='/doctor/login' className=" p-2 hover:bg-[#7371fc]  rounded-full hover:text-white duration-200">
                                     Doctor Login <LoginIcon />
@@ -181,7 +181,7 @@ function MyNavbar() {
                         {!isDoctorLogin && !isPatientLogin ?
                             <div>
                                 <Link className=" p-2  hover:bg-[#7371fc]  rounded-full hover:text-white duration-200">
-                                    User Login <LoginIcon />
+                                    Patient Login <LoginIcon />
                                 </Link>
                                 <Link to='/doctor/login' className=" p-2 hover:bg-[#7371fc]  rounded-full hover:text-white duration-200">
                                     Doctor Login <LoginIcon />

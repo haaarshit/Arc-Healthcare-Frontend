@@ -307,3 +307,84 @@ export const createAppointmet = async (data) => {
   }
   );
 }
+
+export const rejectAppointmet = async (id) => {
+
+  return new Promise(async (resolve, reject) => {
+
+    try {
+      const token = getCookie('token')
+      const response = await axios.delete(requestUrl + "/api/auth/doctor/reject-appointment?id=" + id, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Access-Control-Allow-Origin': '*',
+        },
+        proxy: {
+          host: requestUrl,
+          port: 8080
+        },
+        withCredentials: false
+      })
+      console.log(response.data)
+      resolve({ data: response.data })
+    }
+    catch (e) {
+      reject(e)
+    }
+  }
+  );
+}
+
+export const addQualification = async (data) => {
+
+  return new Promise(async (resolve, reject) => {
+
+    try {
+      const token = getCookie('token')
+      const response = await axios.put(requestUrl + "/api/auth/doctor/add-qualification", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Access-Control-Allow-Origin': '*',
+        },
+        proxy: {
+          host: requestUrl,
+          port: 8080
+        },
+        withCredentials: false
+      })
+      console.log(response.data)
+      resolve({ data: response.data })
+    }
+    catch (e) {
+      reject(e)
+    }
+  }
+  );
+}
+
+export const addWorkExperience = async (data) => {
+
+  return new Promise(async (resolve, reject) => {
+
+    try {
+      const token = getCookie('token')
+      const response = await axios.put(requestUrl + "/api/auth/doctor/add-workExperience", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Access-Control-Allow-Origin': '*',
+        },
+        proxy: {
+          host: requestUrl,
+          port: 8080
+        },
+        withCredentials: false
+      })
+      console.log(response.data)
+      resolve({ data: response.data })
+    }
+    catch (e) {
+      reject(e)
+    }
+  }
+  );
+}

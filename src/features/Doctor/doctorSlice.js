@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createAppointmet, createDoctor, fetchAllDoctors, fetchDoctorDashboard, fetchPatientProfile, getDoctorByCity, loginDoctor, logoutDoctor, updateAppointment, updateAvailability } from './doctorAPI';
+import { addQualification, addWorkExperience, createAppointmet, createDoctor, fetchAllDoctors, fetchDoctorDashboard, fetchPatientProfile, getDoctorByCity, loginDoctor, logoutDoctor, rejectAppointmet, updateAppointment, updateAvailability } from './doctorAPI';
 
 const initialState = {
     isDoctor: false,
@@ -89,6 +89,28 @@ export const createAppointmetAsync = createAsyncThunk(
     'doctor/createAppointmet',
     async (data) => {
         const response = await createAppointmet(data);
+        return response.data;
+    }
+);
+export const rejectAppointmetAsync = createAsyncThunk(
+    'doctor/rejectAppointmet',
+    async (id) => {
+        const response = await rejectAppointmet(id);
+        return response.data;
+    }
+);
+
+export const addQualificationAsync = createAsyncThunk(
+    'doctor/addQualification',
+    async (data) => {
+        const response = await addQualification(data);
+        return response.data;
+    }
+);
+export const addWorkExperienceAsync = createAsyncThunk(
+    'doctor/addWorkExperience',
+    async (data) => {
+        const response = await addWorkExperience(data);
         return response.data;
     }
 );
@@ -251,6 +273,17 @@ export const doctorSlice = createSlice({
                 state.status = 'idle';
                 state.isPanding = false
                 state.allDoctors = action.payload
+            })
+            .addCase(rejectAppointmetAsync.pending, (state) => {
+                state.status = 'loading';
+                state.isPanding = true
+            })
+            .addCase(rejectAppointmetAsync.rejected, (state, action) => {
+                state.isPanding = false
+            })
+            .addCase(rejectAppointmetAsync.fulfilled, (state, action) => {
+                state.status = 'idle';
+                state.isPanding = false
             })
             ;
     },
