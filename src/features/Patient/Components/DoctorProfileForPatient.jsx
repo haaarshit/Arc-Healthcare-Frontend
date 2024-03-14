@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { Avatar } from "@material-tailwind/react";
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
-import { doctorProfile, getDoctorProfileAsync, patientDashBoard, requestAppointmentAsync } from '../patientSlice';
+import { addDoctorReviewAsync, doctorProfile, getDoctorProfileAsync, getPatientDashboardAsync, patientDashBoard, requestAppointmentAsync } from '../patientSlice';
 import ImageModal from '../../../Components/ImageModal';
 import { Box, Modal } from '@mui/material';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+import { useController, useForm } from 'react-hook-form';
+import Rating from '@mui/material/Rating';
+import { extractDate } from '../../../Utils/UtilFunctions';
 
 function DoctorProfileForPatient() {
     const { id } = useParams();
@@ -15,6 +18,7 @@ function DoctorProfileForPatient() {
     const dashboardPatient = useSelector(patientDashBoard)
     const [isAvatarModal, setAvatarModal] = useState(false)
     const [isRequestAppointment, setIsRequestAppointment] = useState(false)
+    const [isRateDoctor, setIsRateDoctor] = useState(false)
     const [requestAppointmentData, setRequestAppointmentData] = useState({})
 
     const handleClick = () => setAvatarModal(!isAvatarModal)
@@ -30,10 +34,13 @@ function DoctorProfileForPatient() {
         }
     }
 
+    const handleIsRateDoctort = () => { setIsRateDoctor(!isRateDoctor) }
+
 
     useEffect(() => {
+        if (dashboardPatient === null) dispatch(getPatientDashboardAsync())
         dispatch(getDoctorProfileAsync(id))
-    }, [dispatch])
+    }, [dispatch, dashboardPatient])
     return (
         <div>
             {
@@ -70,8 +77,13 @@ function DoctorProfileForPatient() {
                                                 <span className="ml-auto">   {DoctorProfile.doctorInfo?.createdAt.split('T')[0]} </span>
                                             </li>
                                         </ul>
-
-                                        <button className='bg-[#7371fc] py-1 px-2 rounded text-white text-sm my-2' onClick={handleIsRequestAppointment}>Request Appointment</button>
+                                        <div className='flex flex-col items-start w-full'>
+                                            <button className='bg-[#7371fc] py-1 px-2 rounded text-white text-sm my-2' onClick={handleIsRequestAppointment}>Request Appointment</button>
+                                            {
+                                                DoctorProfile.appointmentList.length > 0 &&
+                                                <button className='bg-green-400 py-1 px-2 rounded text-white text-sm mb-2' onClick={handleIsRateDoctort} >Rate Doctor</button>
+                                            }
+                                        </div>
                                     </div>
                                     {/* End of profile card */}
                                     <div className="my-4" />
@@ -237,6 +249,7 @@ function DoctorProfileForPatient() {
 
                             <ImageModal avatar={DoctorProfile.doctorInfo.avatar} handleClick={handleClick} isAvatarModal={isAvatarModal} />
                             <RequestAppointmentModal handleClick={handleIsRequestAppointment} isRequestAppointment={isRequestAppointment} requestAppointmentData={requestAppointmentData} setRequestAppointmentData={setRequestAppointmentData} />
+                            <RateDoctorModal handleClick={handleIsRateDoctort} isRateDoctor={isRateDoctor} dashboardPatient={dashboardPatient} doctorProfile={DoctorProfile} />
                         </div>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 w-full">
                             <div className="p-6 relative flex flex-col min-w-0 mb-4 lg:mb-0 break-words bg-gray-50 dark:bg-gray-800 w-full shadow-lg rounded ">
@@ -265,7 +278,7 @@ function DoctorProfileForPatient() {
 
 
                                                 {
-                                                    DoctorProfile.appointmentList.map(e =>
+                                                    DoctorProfile.appointmentList?.map(e =>
 
                                                         <tr className="text-gray-700 dark:text-gray-100">
                                                             <th className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
@@ -324,6 +337,24 @@ function DoctorProfileForPatient() {
                                     </div>
                                 </ul>
                             </div>
+                            <div className='col-span-2'>
+                                <h1 className='text-center text-xl font-semibold'>Reviews by Patients</h1>
+                                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 ">
+
+                                    {
+                                        DoctorProfile?.doctorInfo?.reviews?.map(e => (
+
+                                            <div className="bg-white rounded-lg shadow-md p-4 mb-4  col-span-1 mx-2">
+                                                <p className="text-gray-700">{e.comment}</p>
+                                                <Rating value={e.rating} readOnly size='small' /> {/* Assuming you have a Rating component */}
+                                                <h2 className="text-sm font-sm mb-2"> By {e.patientName}</h2>
+                                                <p className='text-sm text-gray-400'> {e.date}</p>
+                                            </div>
+                                        )
+                                        )
+                                    }
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -372,12 +403,96 @@ const RequestAppointmentModal = ({ handleClick, isRequestAppointment, requestApp
                     <input type="text" placeholder='Enter problem you have' onChange={e => {
                         setAllergy(e.target.value)
                     }} />
+
                     <button disabled={disable} className='bg-[#7371fc] text-white rounded-sm text-sm px-2 py-1 w-[90px] mt-3' onClick={submitHandler}>Request</button>
                 </div>
             </Box>
         </Modal>
     )
 }
+const RateDoctorModal = ({ handleClick, isRateDoctor, dashboardPatient, doctorProfile }) => {
+    const { setValue, handleSubmit, control, register, formState: { errors } } = useForm()
+
+
+    const dispatch = useDispatch()
+    const [rating, setRating] = useState(0);
+    const [disable, setDisable] = useState(false)
+    const submitHandler = (formdata) => {
+
+        const formattedDate = extractDate(new Date())
+
+        const data = {
+            comment: formdata.comment,
+            rating,
+            patientName: dashboardPatient?.patientInfo?.personalInfo?.firstName + " " + dashboardPatient?.patientInfo?.personalInfo?.lastName,
+            date: formattedDate
+        }
+        console.log()
+        setDisable(true)
+        setTimeout(() => { handleClick() }, 1000)
+
+        const req = {
+            data,
+            id: doctorProfile?.doctorInfo?.id
+        }
+        dispatch(addDoctorReviewAsync(req))
+    }
+
+    useEffect(() => {
+
+    }, [dispatch])
+
+    return (
+        <Modal
+            open={isRateDoctor}
+            onClose={handleClick}
+            aria-labelledby="parent-modal-title"
+            aria-describedby="parent-modal-description"
+            className='flex items-center justify-center p-1 '
+        >
+            <Box className='relative border  border-none bg-white sm:w-auto  w-[90%] flex justify-center px-2 rounded-md'>
+                <form onSubmit={handleSubmit(submitHandler)} className='flex justify-center items-center flex-col p-2'>
+                    <div className='mb-4'>
+                        <h1 class="text-md font-medium text-center mb-2">Give your review on Doctor</h1>
+
+
+                    </div>
+                    <div className='mb-4'>
+                        <input
+                            {...register(`comment`)}
+                            type="text"
+                            id={`comment`}
+                            placeholder="Write Your Review"
+                            className="px-3 py-2 rounded-md border focus:outline-none focus:ring-blue-500 focus:ring-1"
+                        />
+
+                    </div>
+
+                    <div className='mb-4'>
+                        <Rating
+                            name="simple-controlled"
+                            value={rating}
+                            onChange={(event, newValue) => {
+                                console.log(event)
+                                console.log(newValue)
+                                setRating(newValue);
+                            }}
+                        />
+                    </div>
+                    <div className="md:flex mb-4">
+                        <div className="md:flex-1 mt-2 mb:mt-0 md:px-3">
+                            <button disabled={disable} className='bg-[#7371fc] text-white rounded-sm text-sm p-2'>Submit Review</button>
+                        </div>
+                    </div>
+                </form>
+            </Box>
+        </Modal>
+    )
+}
+
+// rating component
+
+
 
 
 export default DoctorProfileForPatient

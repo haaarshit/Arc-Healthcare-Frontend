@@ -149,3 +149,25 @@ export const requestAppointment = async (data) => {
   );
 }
 
+export const addDoctorReview = async (reqData) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+
+      const token = getCookie('token')
+      const repsonse = await axios.post(requestUrl + '/api/auth/patient/add-review?id='+reqData.id,reqData.data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Access-Control-Allow-Origin': '*',
+        },
+      });
+      resolve({ data: repsonse.data })
+    }
+    catch (e) {
+      console.log(e)
+      reject(e)
+    }
+
+  }
+  );
+}
+

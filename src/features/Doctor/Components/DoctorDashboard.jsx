@@ -747,7 +747,7 @@ const AddWorkExperience = ({ handleClick, isAddWorkExperience }) => {
               <button  className='bg-[#7371fc] text-white rounded-sm text-sm p-2'>Add Work Experience</button>
             </div>
           </div>
-        </form>
+        </form> 
       </Box>
     </Modal>
   )

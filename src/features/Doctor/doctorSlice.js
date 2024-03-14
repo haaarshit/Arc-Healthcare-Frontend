@@ -107,6 +107,7 @@ export const addQualificationAsync = createAsyncThunk(
         return response.data;
     }
 );
+
 export const addWorkExperienceAsync = createAsyncThunk(
     'doctor/addWorkExperience',
     async (data) => {
@@ -114,6 +115,7 @@ export const addWorkExperienceAsync = createAsyncThunk(
         return response.data;
     }
 );
+
 
 
 

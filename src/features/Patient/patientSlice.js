@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createPatient, fetchCount, fetchPatientDashboard, getDoctorProfile, loginPatient, logoutPatient, requestAppointment } from './patientAPI';
+import { addDoctorReview, createPatient, fetchCount, fetchPatientDashboard, getDoctorProfile, loginPatient, logoutPatient, requestAppointment } from './patientAPI';
 
 const initialState = {
   isPatient: false,
@@ -13,7 +13,7 @@ const initialState = {
 
 // get doctor profile for patient
 export const getDoctorProfileAsync = createAsyncThunk(
-  'counter/getDoctorProfile',
+  'patient/getDoctorProfile',
   async (id) => {
     const response = await getDoctorProfile(id);
     return response.data;
@@ -21,7 +21,7 @@ export const getDoctorProfileAsync = createAsyncThunk(
 );
 
 export const loginPatientAsync = createAsyncThunk(
-  'counter/loginPatient',
+  'patient/loginPatient',
   async (data) => {
     const response = await loginPatient(data);
     return response.data;
@@ -29,7 +29,7 @@ export const loginPatientAsync = createAsyncThunk(
 );
 
 export const createPatientAsync = createAsyncThunk(
-  'counter/createPatient',
+  'patient/createPatient',
   async (data) => {
     const response = await createPatient(data);
     return response.data;
@@ -38,7 +38,7 @@ export const createPatientAsync = createAsyncThunk(
 
 
 export const logoutPatientAsync = createAsyncThunk(
-  'doctor/logoutPatient',
+  'patient/logoutPatient',
   async () => {
       const response = await logoutPatient();
       return response.data;
@@ -46,7 +46,7 @@ export const logoutPatientAsync = createAsyncThunk(
 );
 
 export const getPatientDashboardAsync = createAsyncThunk(
-  'doctor/getPatientDashboard',
+  'patient/getPatientDashboard',
   async () => {
       const response = await fetchPatientDashboard();
       return response.data;
@@ -54,9 +54,17 @@ export const getPatientDashboardAsync = createAsyncThunk(
 );
 
 export const requestAppointmentAsync = createAsyncThunk(
-  'doctor/requestAppointment',
+  'patient/requestAppointment',
   async (data) => {
       const response = await requestAppointment(data);
+      return response.data;
+  }
+);
+
+export const addDoctorReviewAsync = createAsyncThunk(
+  'patient/addWorkExperience',
+  async (reqData) => {
+      const response = await addDoctorReview(reqData);
       return response.data;
   }
 );
