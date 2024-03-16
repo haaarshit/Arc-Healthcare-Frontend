@@ -1,5 +1,5 @@
 import { Avatar } from '@material-tailwind/react'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { getAllDoctorAsync, getAllDoctors, getDoctorByCityAsync, getDoctorDashboardAsync, isDoctor } from '../Doctor/doctorSlice'
@@ -13,6 +13,7 @@ import {
     Button,
 } from "@material-tailwind/react";
 import { useForm } from 'react-hook-form'
+import GetStartedModal from '../../Components/GetStartedModal'
 
 
 function Home() {
@@ -22,6 +23,9 @@ function Home() {
         console.log(data.cityname)
         dispatch(getDoctorByCityAsync(data.cityname))
     }
+
+    const [isOpenGetStartedModal,setGetStartedModal] = useState(false)
+    const handleIsOpenGetStartedModal = ()=>{setGetStartedModal(!isOpenGetStartedModal)}
 
     const doctors = useSelector(getAllDoctors)
     const dispatch = useDispatch()
@@ -44,23 +48,23 @@ function Home() {
                                 <div className="flex  bg-white  h-[100vh] " >
                                     <div className="flex items-center text-center lg:text-left px-8 md:px-12 lg:w-1/2">
                                         <div>
-                                            <h2 className="text-3xl font-semibold text-gray-800 md:text-4xl">
-                                                Welcome To <span className='text-[#7371fc]'>HEALTH ARC</span>
-                                            </h2>
+                                            {/* <h2  className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
 
-                                            <p className="text-base text-body-color">
-                                                A platform which connects you with the right doctors. <br />
-                                                And enable patients and doctors to connect with each other.
-                                            </p>
+                                                Welcome To <span className='text-[#7371fc]'>HEALTH ARC</span>
+                                            </h2> */}
+                                            <h1 class="col-start-1 row-start-2 mt-4 max-w-[36rem] text-4xl font-extrabold tracking-tight text-slate-900 sm:text-7xl xl:max-w-[43.5rem]">  Welcome To <span className='text-[#7371fc]'>HEALTH ARC</span></h1>
+                                  
+                                            <p class="col-start-1 row-start-3 mt-4 max-w-lg text-lg text-slate-700">  A platform which connects you with the right doctors. <br />
+                                                And enable patients and doctors to connect with each other.</p>
                                             <div className="flex justify-center lg:justify-start mt-6">
                                                 {!isDoctorLoggedIn && !isPatientLoggedIn &&
                                                     <>
-                                                        <Link
+                                                        <button
                                                             className="px-4 py-3 bg-gray-900 text-gray-200 text-xs font-semibold rounded hover:bg-gray-800"
-                                                            href="#"
+                                                            onClick={handleIsOpenGetStartedModal}                                                            
                                                         >
                                                             Get Started
-                                                        </Link>
+                                                        </button>
                                                     </>
                                                 }
                                             </div>
@@ -98,6 +102,7 @@ function Home() {
                             </div>
                         }
                     </div>
+                    <GetStartedModal isGetStarted={isOpenGetStartedModal} handleClick={handleIsOpenGetStartedModal} />
                 </section>
             </>
         </div>

@@ -13,6 +13,7 @@ import DoctorProfileForPatient from './features/Patient/Components/DoctorProfile
 import AppointmentDoctor from './features/Doctor/Components/AppointmentDoctor';
 import PatientRegister from './features/Patient/Components/PatientRegister';
 import AppointmentPagePatient from './features/Patient/Components/AppointmentPagePatient';
+import AboutPage from './Pages/AboutPage';
 
 
 function App() {
@@ -22,7 +23,7 @@ function App() {
         <Routes>
           <Route element={<HomePage />} >
             <Route path='/' element={<Home />} />
-            <Route path='/about' element={<div />} />
+            <Route path='/about' element={<AboutPage/>} />
           </Route>
           {/* doctor routes */}
           <Route path='/doctor/login' element={<DoctorLogin />} />
