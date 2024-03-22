@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import ImageModal from '../../../Components/ImageModal';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Avatar } from '@material-tailwind/react';
-
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 
 export function PatientDashBoard() {
   const dashboard = useSelector(patientDashBoard)

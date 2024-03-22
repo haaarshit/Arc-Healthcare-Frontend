@@ -2,6 +2,7 @@ import { Avatar } from '@material-tailwind/react'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+
 import { getAllDoctorAsync, getAllDoctors, getDoctorByCityAsync, getDoctorDashboardAsync, isDoctor } from '../Doctor/doctorSlice'
 import { getPatientDashboardAsync, isPatient } from '../Patient/patientSlice'
 import {
@@ -14,6 +15,7 @@ import {
 } from "@material-tailwind/react";
 import { useForm } from 'react-hook-form'
 import GetStartedModal from '../../Components/GetStartedModal'
+import { Search } from '@mui/icons-material'
 
 
 function Home() {
@@ -24,8 +26,8 @@ function Home() {
         dispatch(getDoctorByCityAsync(data.cityname))
     }
 
-    const [isOpenGetStartedModal,setGetStartedModal] = useState(false)
-    const handleIsOpenGetStartedModal = ()=>{setGetStartedModal(!isOpenGetStartedModal)}
+    const [isOpenGetStartedModal, setGetStartedModal] = useState(false)
+    const handleIsOpenGetStartedModal = () => { setGetStartedModal(!isOpenGetStartedModal) }
 
     const doctors = useSelector(getAllDoctors)
     const dispatch = useDispatch()
@@ -53,7 +55,7 @@ function Home() {
                                                 Welcome To <span className='text-[#7371fc]'>HEALTH ARC</span>
                                             </h2> */}
                                             <h1 class="col-start-1 row-start-2 mt-4 max-w-[36rem] text-4xl font-extrabold tracking-tight text-slate-900 sm:text-7xl xl:max-w-[43.5rem]">  Welcome To <span className='text-[#7371fc]'>HEALTH ARC</span></h1>
-                                  
+
                                             <p class="col-start-1 row-start-3 mt-4 max-w-lg text-lg text-slate-700">  A platform which connects you with the right doctors. <br />
                                                 And enable patients and doctors to connect with each other.</p>
                                             <div className="flex justify-center lg:justify-start mt-6">
@@ -61,7 +63,7 @@ function Home() {
                                                     <>
                                                         <button
                                                             className="px-4 py-3 bg-gray-900 text-gray-200 text-xs font-semibold rounded hover:bg-gray-800"
-                                                            onClick={handleIsOpenGetStartedModal}                                                            
+                                                            onClick={handleIsOpenGetStartedModal}
                                                         >
                                                             Get Started
                                                         </button>
@@ -161,10 +163,10 @@ const FilterDoctorByCityForm = ({ register, handleSubmit, onSubmit }) => {
                 {...register(`cityname`)}
                 className="w-full rounded-md shadow-sm border border-gray-300 px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
+            <button type='submit' className='bg-indigo-600 text-white rounded-md px-4 py-2 hover:bg-indigo-700'>
+                <Search />
+            </button>
         </div>
-
-            <button type='submit' className='bg-indigo-600 text-white rounded-md px-4 py-2 hover:bg-indigo-700'>Search</button>
-
         </form>
 
     )

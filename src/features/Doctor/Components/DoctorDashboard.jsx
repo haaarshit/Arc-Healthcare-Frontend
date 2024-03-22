@@ -12,6 +12,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Availability } from './DoctorRegister';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+
 export function DoctorDashBoard() {
 
   const dashboard = useSelector(doctorDashBoard)
@@ -68,8 +69,9 @@ export function DoctorDashBoard() {
                 <div className="w-full md:w-3/12 md:mx-2">
                   {/* Profile Card */}
                   <div className="bg-white p-3 flex flex-col items-center border-green-400">
-                    <div className="image overflow-hidden">
+                    <div className="image overflow-hidden relative ">
                       <Avatar src={dashboard.doctorInfo?.avatar} alt="avatar" className='rounded-full h-[100px] w-[100px]' onClick={handleClick} />
+                      <EditOutlinedIcon className="cursor-pointer text-gray-500 hover:text-blue-500 transition duration-300 absolute top-[-10px] "  />
                     </div>
                     <h1 className="text-gray-900 font-bold text-xl leading-8 my-1">
                       {dashboard.doctorInfo?.personalInfo?.firstName}  {dashboard.doctorInfo?.personalInfo?.lastName}
