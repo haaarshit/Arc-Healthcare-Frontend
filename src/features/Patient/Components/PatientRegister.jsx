@@ -94,7 +94,7 @@ function PatientRegister() {
                             </ul>
                             <div className="my-6 text-center">
                                 <span className="md:text-sm text-md text-gray-700">Alreadt have an account? </span>
-                                <Link to="/doctor/login" className="inline-block align-baseline font-bold text-sm text-indigo-600 hover:text-indigo-700">
+                                <Link to="/patient/login" className="inline-block align-baseline font-bold text-sm text-indigo-600 hover:text-indigo-700">
                                     Login
                                 </Link>
                             </div>

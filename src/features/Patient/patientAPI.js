@@ -9,8 +9,6 @@ export function fetchCount(amount = 1) {
   );
 }
 
-
-
 export const createPatient = async (data) => {
   const base64Img = await imageToBase64(data.avatar[0])
 
@@ -88,7 +86,7 @@ export const fetchPatientDashboard = async () => {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
-          
+
         },
         proxy: {
           host: requestUrl,
@@ -132,7 +130,7 @@ export const requestAppointment = async (data) => {
     try {
 
       const token = getCookie('token')
-      const repsonse = await axios.post(requestUrl + '/api/auth/patient/add-appointmentRequest',data, {
+      const repsonse = await axios.post(requestUrl + '/api/auth/patient/add-appointmentRequest', data, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Access-Control-Allow-Origin': '*',
@@ -148,13 +146,13 @@ export const requestAppointment = async (data) => {
   }
   );
 }
-
+// add doctor review
 export const addDoctorReview = async (reqData) => {
   return new Promise(async (resolve, reject) => {
     try {
 
       const token = getCookie('token')
-      const repsonse = await axios.post(requestUrl + '/api/auth/patient/add-review?id='+reqData.id,reqData.data, {
+      const repsonse = await axios.post(requestUrl + '/api/auth/patient/add-review?id=' + reqData.id, reqData.data, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Access-Control-Allow-Origin': '*',
@@ -171,3 +169,46 @@ export const addDoctorReview = async (reqData) => {
   );
 }
 
+// update height 
+export const updatePatientHeight = (height) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+
+      const token = getCookie('token')
+      const repsonse = await axios.put(requestUrl + '/api/auth/patient/update-height', height, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Access-Control-Allow-Origin': '*',
+        },
+      });
+      resolve({ data: repsonse.data })
+    }
+    catch (e) {
+      console.log(e)
+      reject(e)
+    }
+  }
+  );
+}
+
+// update weight 
+export const updatePatientWeight = (weight) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+
+      const token = getCookie('token')
+      const repsonse = await axios.put(requestUrl + '/api/auth/patient/update-height', weight, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Access-Control-Allow-Origin': '*',
+        },
+      });
+      resolve({ data: repsonse.data })
+    }
+    catch (e) {
+      console.log(e)
+      reject(e)
+    }
+  }
+  );
+}

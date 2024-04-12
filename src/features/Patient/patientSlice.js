@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { addDoctorReview, createPatient, fetchCount, fetchPatientDashboard, getDoctorProfile, loginPatient, logoutPatient, requestAppointment } from './patientAPI';
+import { addDoctorReview, createPatient, fetchCount, fetchPatientDashboard, getDoctorProfile, loginPatient, logoutPatient, requestAppointment, updatePatientHeight, updatePatientWeight } from './patientAPI';
 
 const initialState = {
   isPatient: false,
@@ -65,6 +65,22 @@ export const addDoctorReviewAsync = createAsyncThunk(
   'patient/addWorkExperience',
   async (reqData) => {
       const response = await addDoctorReview(reqData);
+      return response.data;
+  }
+);
+
+export const updatePatientHeightAsync = createAsyncThunk(
+  'patient/updateHeight',
+  async (height) => {
+      const response = await updatePatientHeight(height);
+      return response.data;
+  }
+);
+
+export const updatePatientWeightAsync = createAsyncThunk(
+  'patient/updateWeight',
+  async (weight) => {
+      const response = await updatePatientWeight(weight);
       return response.data;
   }
 );

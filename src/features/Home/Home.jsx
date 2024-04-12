@@ -50,10 +50,6 @@ function Home() {
                                 <div className="flex  bg-white  h-[100vh] " >
                                     <div className="flex items-center text-center lg:text-left px-8 md:px-12 lg:w-1/2">
                                         <div>
-                                            {/* <h2  className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-
-                                                Welcome To <span className='text-[#7371fc]'>HEALTH ARC</span>
-                                            </h2> */}
                                             <h1 class="col-start-1 row-start-2 mt-4 max-w-[36rem] text-4xl font-extrabold tracking-tight text-slate-900 sm:text-7xl xl:max-w-[43.5rem]">  Welcome To <span className='text-[#7371fc]'>HEALTH ARC</span></h1>
 
                                             <p class="col-start-1 row-start-3 mt-4 max-w-lg text-lg text-slate-700">  A platform which connects you with the right doctors. <br />
