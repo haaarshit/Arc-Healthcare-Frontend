@@ -123,7 +123,7 @@ export function DoctorDashBoard() {
                         </div>
                         <div className="grid grid-cols-2">
                           <div className="px-4 py-2 font-semibold">Contact No.</div>
-                          <div className="px-4 py-2">  <a href="whatsapp://send?abid=phonenumber&text=Hello%2C%20World!"> {dashboard.doctorInfo?.phone} </a></div>
+                          <div className="px-4 py-2">  <a href={`https://wa.me/${dashboard.doctorInfo?.phone}`}> {dashboard.doctorInfo?.phone} </a></div>
 
                         </div>
                         <div className="grid grid-cols-2">

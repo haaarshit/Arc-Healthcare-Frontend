@@ -1,16 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getPatientDashboardAsync, patientDashBoard } from '../patientSlice';
+import { getPatientDashboardAsync, patientDashBoard, updatePatientHeightAsync, updatePatientWeightAsync } from '../patientSlice';
 import { Link } from 'react-router-dom';
 import ImageModal from '../../../Components/ImageModal';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Avatar } from '@material-tailwind/react';
+import { Box, Modal } from '@mui/material';
+import { useForm } from 'react-hook-form';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+
 
 export function PatientDashBoard() {
   const dashboard = useSelector(patientDashBoard)
   const [isAvatarModal, setAvatarModal] = useState(false)
+  const [isUpdateHeight, setIsUpdateHeight] = useState(false)
+  const [isUpdateWeight, setIsUpdateWeight] = useState(false)
   const handleClick = () => { setAvatarModal(!isAvatarModal) }
+  const handleUpdateHeight = () => { setIsUpdateHeight(!isUpdateHeight) }
+  const handleUpdateWeight = () => { setIsUpdateWeight(!isUpdateWeight) }
 
   const dispatch = useDispatch()
 
@@ -115,11 +122,25 @@ export function PatientDashBoard() {
                           <div className="px-4 py-2">{dashboard.patientInfo?.bloodType}</div>
                         </div>
                         <div className="grid grid-cols-2">
-                          <div className="px-4 py-2 font-semibold">Height</div>
+                          <div className="px-4 py-2 font-semibold  flex items-center">
+                            <p>Height
+                            </p>
+                            <div onClick={handleUpdateHeight}>
+                              <EditOutlinedIcon className='cursor-pointer text-gray-500 hover:text-blue-500 transition duration-300 ' />
+                            </div>
+
+                          </div>
                           <div className="px-4 py-2">{dashboard.patientInfo?.height} cm</div>
                         </div>
                         <div className="grid grid-cols-2">
-                          <div className="px-4 py-2 font-semibold">Weight</div>
+                          <div className="px-4 py-2 font-semibold  flex items-center">
+                            <p>
+                            Weight
+                            </p>
+                            <div onClick={handleUpdateWeight}>
+                              <EditOutlinedIcon className='cursor-pointer text-gray-500 hover:text-blue-500 transition duration-300 ' />
+                            </div>
+                            </div>
                           <div className="px-4 py-2">{dashboard.patientInfo?.weight} kg</div>
                         </div>
                       </div>
@@ -198,12 +219,105 @@ export function PatientDashBoard() {
             </div>
           </div>
 
-    
+
           {/* modals */}
           <ImageModal isAvatarModal={isAvatarModal} handleClick={handleClick} avatar={dashboard.patientInfo?.avatar} />
+          <UpdateHeight isUpdateHeight={isUpdateHeight} handleClick={handleUpdateHeight} />
+          <UpdateWeight isUpdateWeight={isUpdateWeight} handleClick={handleUpdateWeight} />
           {/* End Content */}
         </div>
       }
     </>
   );
+}
+
+
+const UpdateHeight = ({ isUpdateHeight, handleClick }) => {
+  const { register, handleSubmit, formState: { errors } } = useForm()
+  const dispath = useDispatch()
+  const submitHandler = (height) => {
+    console.log(height.height)
+    dispath(updatePatientHeightAsync(height.height))
+  }
+
+
+  return (
+    <Modal
+      open={isUpdateHeight}
+      onClose={handleClick}
+      aria-labelledby="parent-modal-title"
+      aria-describedby="parent-modal-description"
+      className='flex items-center justify-center p-1 '
+    >
+      <Box className='relative border  border-none bg-white sm:w-auto  w-[90%] flex justify-center px-2'>
+        <form onSubmit={handleSubmit(submitHandler)} >
+          <h1 className='m-2 font-semibold'>Update Height</h1>
+          <div className="md:flex mb-8">
+            <div className="md:flex-1 mt-2 mb:mt-0 md:px-3">
+              <input
+                {...register(`height`, { max: { value: 215, message: "Very High value" } })}
+                type="number"
+                id={`endDate`}
+                placeholder="Enter Height"
+                className="px-3 py-2 rounded-md border focus:outline-none focus:ring-blue-500 focus:ring-1"
+              />
+              <button className='bg-[#7371fc] text-white rounded-sm text-sm p-2'>Update Height</button>
+            </div>
+          </div>
+
+          {errors.height && (
+            <span className="text-red-500 text-sm text center">{errors.height.message}</span>
+          )
+          }
+        </form>
+      </Box>
+    </Modal>
+  )
+
+
+}
+
+const UpdateWeight = ({ isUpdateWeight, handleClick }) => {
+  const { register, handleSubmit, formState: { errors } } = useForm()
+  const dispath = useDispatch()
+  const submitHandler = (weight) => {
+    console.log(weight.weight)
+    dispath(updatePatientWeightAsync(weight.weight))
+  }
+
+
+  return (
+    <Modal
+      open={isUpdateWeight}
+      onClose={handleClick}
+      aria-labelledby="parent-modal-title"
+      aria-describedby="parent-modal-description"
+      className='flex items-center justify-center p-1 '
+    >
+      <Box className='relative border  border-none bg-white sm:w-auto  w-[90%] flex justify-center px-2'>
+        <form onSubmit={handleSubmit(submitHandler)} >
+          <h1 className='m-2 font-semibold'>Update Weight</h1>
+          <div className="md:flex mb-8">
+            <div className="md:flex-1 mt-2 mb:mt-0 md:px-3">
+              <input
+                {...register(`weight`, { max: { value: 250, message: "Very High value" } })}
+                type="number"
+                id={`endDate`}
+                placeholder="Enter Weight"
+                className="px-3 py-2 rounded-md border focus:outline-none focus:ring-blue-500 focus:ring-1"
+              />
+              <button className='bg-[#7371fc] text-white rounded-sm text-sm p-2'>Update Weight</button>
+            </div>
+          </div>
+
+          {errors.height && (
+            <span className="text-red-500 text-sm text center">{errors.height.message}</span>
+          )
+          }
+        </form>
+      </Box>
+    </Modal>
+  )
+
+
 }

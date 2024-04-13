@@ -179,6 +179,7 @@ export const updatePatientHeight = (height) => {
         headers: {
           Authorization: `Bearer ${token}`,
           'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json'
         },
       });
       resolve({ data: repsonse.data })
@@ -197,10 +198,11 @@ export const updatePatientWeight = (weight) => {
     try {
 
       const token = getCookie('token')
-      const repsonse = await axios.put(requestUrl + '/api/auth/patient/update-height', weight, {
+      const repsonse = await axios.put(requestUrl + '/api/auth/patient/update-weight', weight, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json'
         },
       });
       resolve({ data: repsonse.data })
