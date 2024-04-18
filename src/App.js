@@ -14,6 +14,7 @@ import AppointmentDoctor from './features/Doctor/Components/AppointmentDoctor';
 import PatientRegister from './features/Patient/Components/PatientRegister';
 import AppointmentPagePatient from './features/Patient/Components/AppointmentPagePatient';
 import AboutPage from './Pages/AboutPage';
+import EmailVerification from './features/Doctor/Components/EmailVerification';
 
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
           <Route path='/doctor/dashboard' element={<DoctorDashBoard />} />
           <Route path='/doctor/:id' element={<DoctorProfileForPatient />} />
           <Route path='/doctor/appointment/:id' element={<AppointmentDoctor />} />
+          {/* <Route path='/doctor/otp-verification' element={<EmailVerification />} /> */}
           {/* patient routes */}
           <Route path='/patient/appointment/:id' element={<AppointmentPagePatient/>} />
           <Route path='/patient/login' element={<PatientLogin />} />

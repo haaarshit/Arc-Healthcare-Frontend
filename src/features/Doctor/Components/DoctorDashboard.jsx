@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { addQualificationAsync, addWorkExperienceAsync, createAppointmetAsync, doctorDashBoard, getDoctorDashboardAsync, rejectAppointmetAsync, updateAppointmentAsync, updateAvailabilityAsync } from '../doctorSlice';
+import { addQualificationAsync, addWorkExperienceAsync, createAppointmetAsync, doctorDashBoard, doctorErrorMessage, getDoctorDashboardAsync, isDoctorError, rejectAppointmetAsync, updateAppointmentAsync, updateAvailabilityAsync } from '../doctorSlice';
 import { Box, Modal, TextField } from '@mui/material';
 import ImageModal from '../../../Components/ImageModal';
 import { extractTime } from '../../../Utils/UtilFunctions';

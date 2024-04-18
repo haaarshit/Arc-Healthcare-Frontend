@@ -283,6 +283,7 @@ const UpdateWeight = ({ isUpdateWeight, handleClick }) => {
   const submitHandler = (weight) => {
     console.log(weight.weight)
     dispath(updatePatientWeightAsync(weight.weight))
+      //  setTimeout(() => { handleClick() }, 1000)
   }
 
 

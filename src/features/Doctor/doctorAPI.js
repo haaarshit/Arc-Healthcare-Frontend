@@ -388,3 +388,25 @@ export const addWorkExperience = async (data) => {
   }
   );
 }
+
+// otp verification
+export const doctorOtpVerification = async (data) => {
+  console.log(data)
+
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.post(requestUrl + "/api/public/doctor/otp-verification", data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true
+      })
+      console.log(response.data)
+      resolve({ data: response.data })
+    }
+    catch (e) {
+      reject(e)
+    }
+  }
+  );
+}

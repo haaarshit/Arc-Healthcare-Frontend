@@ -22,11 +22,11 @@ function AboutPage() {
                     At HealthArc, we believe everyone deserves convenient access to quality healthcare. That's why we created a streamlined appointment booking app that puts you in control of your well-being.
                   </p>
                   <div className="mt-10 flex flex-col items-center md:flex-row">
-                    <button
+                    {/* <button
                       className=" mb-3 inline-flex h-12 w-full items-center justify-center rounded bg-[#7371fc] px-6 font-medium tracking-wide text-white shadow-md transition hover:bg-[#7373ff] focus:outline-none md:mr-4 md:mb-0 md:w-auto"
                     >
                       View More
-                    </button>
+                    </button> */}
 
                   </div>
                 </div>

@@ -3,7 +3,7 @@ import { Typography, useSelect } from '@material-tailwind/react';
 import React, { useEffect, useState } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
-import { createDoctorAsync, isDoctor, doctorData, isDoctorPending } from '../doctorSlice';
+import { createDoctorAsync, isDoctor, doctorData, isDoctorPending, isDoctorError, doctorErrorMessage } from '../doctorSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -14,6 +14,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { TextField } from '@mui/material';
 import { extractTime } from '../../../Utils/UtilFunctions';
 import { Spinner } from "@material-tailwind/react";
+import EmailVerification from './EmailVerification';
 
 function DoctorRegister() {
   const dispatch = useDispatch()
@@ -23,16 +24,22 @@ function DoctorRegister() {
   const doctorInfo = useSelector(doctorData)
   const isPending = useSelector(isDoctorPending)
   const navigate = useNavigate()
+  const isError = useSelector(isDoctorError)
+  const errorMessage = useSelector(doctorErrorMessage)
 
-
+  const [isOtpModal, setIsOtpModal] = useState(false)
+  const handleOtpModal = () => setIsOtpModal(!isOtpModal)
+  const [email, setEmail] = useState(null)
   const onSubmit = async (data) => {
     console.log(data);
+    setEmail(data.email)
     dispatch(createDoctorAsync(data))
   };
 
   useEffect(() => {
-    if (isDoctorRegistered === true && doctorInfo !== null) {
-      navigate('/doctor/login')
+    if (isDoctorRegistered === true && isError === false) {
+      // navigate('/doctor/otp-verification',)
+      setIsOtpModal(true)
       console.log("isregistered______________")
     }
   }, [isDoctorRegistered, isPending])
@@ -206,8 +213,14 @@ function DoctorRegister() {
                     <Spinner />
                 }
               </button>
+              {
+                isError &&
+                <p className='text-red-400'>User Already exist with provided mail id</p>
+              }
             </form>
           </div>
+          <EmailVerification isOtpModal={isOtpModal} handleClick={handleOtpModal} email={email} />
+
         </div>
       </div >
     </div >

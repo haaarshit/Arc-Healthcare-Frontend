@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { addQualification, addWorkExperience, createAppointmet, createDoctor, fetchAllDoctors, fetchDoctorDashboard, fetchPatientProfile, getDoctorByCity, loginDoctor, logoutDoctor, rejectAppointmet, updateAppointment, updateAvailability } from './doctorAPI';
+import { addQualification, addWorkExperience, createAppointmet, createDoctor, doctorOtpVerification, fetchAllDoctors, fetchDoctorDashboard, fetchPatientProfile, getDoctorByCity, loginDoctor, logoutDoctor, rejectAppointmet, updateAppointment, updateAvailability } from './doctorAPI';
 
 const initialState = {
     isDoctor: false,
@@ -8,6 +8,8 @@ const initialState = {
     patientProfileForDoctor: null,
     status: 'idle',
     isPanding: false,
+    isError:false,
+    errorMessage:null,
     allDoctors: []
 };
 
@@ -77,6 +79,7 @@ export const updateAppointmentAsync = createAsyncThunk(
         return response.data;
     }
 );
+
 export const updateAvailabilityAsync = createAsyncThunk(
     'doctor/updateAvailability',
     async (data) => {
@@ -92,6 +95,7 @@ export const createAppointmetAsync = createAsyncThunk(
         return response.data;
     }
 );
+
 export const rejectAppointmetAsync = createAsyncThunk(
     'doctor/rejectAppointmet',
     async (id) => {
@@ -112,6 +116,14 @@ export const addWorkExperienceAsync = createAsyncThunk(
     'doctor/addWorkExperience',
     async (data) => {
         const response = await addWorkExperience(data);
+        return response.data;
+    }
+);
+
+export const doctorOtpVerificationAsync = createAsyncThunk(
+    'doctor/otpverification',
+    async (data) => {
+        const response = await doctorOtpVerification(data);
         return response.data;
     }
 );
@@ -139,12 +151,16 @@ export const doctorSlice = createSlice({
             .addCase(createDoctorAsync.pending, (state) => {
                 state.status = 'loading';
                 state.isPanding = true
+                state.isError = false
+                state.errorMessage = null
             })
-            .addCase(createDoctorAsync.rejected, (state) => {
+            .addCase(createDoctorAsync.rejected, (state,action) => {
                 state.status = "failed"
                 state.isDoctor = false;
                 state.isPanding = false
                 state.doctorData = null
+                state.isError = true;
+                state.errorMessage = action.payload
             })
             .addCase(createDoctorAsync.fulfilled, (state, action) => {
                 console.log("Acotion payload => " + action.payload)
@@ -152,17 +168,23 @@ export const doctorSlice = createSlice({
                 state.isDoctor = true;
                 state.isPanding = false
                 state.doctorData = action.payload
+                state.isError = false
+                state.errorMessage = null
             })
             // Login doctor
             .addCase(loginDoctorAsync.pending, (state) => {
                 state.status = 'loading';
                 state.isPanding = true
+                state.isError = false
+                state.errorMessage = null
             })
             .addCase(loginDoctorAsync.rejected, (state, action) => {
                 state.status = "failed"
                 state.isDoctor = false;
                 state.isPanding = false
                 state.doctorData = null
+                state.isError = true
+                state.errorMessage = action.payload
             })
             .addCase(loginDoctorAsync.fulfilled, (state, action) => {
                 state.status = 'idle';
@@ -287,6 +309,25 @@ export const doctorSlice = createSlice({
                 state.status = 'idle';
                 state.isPanding = false
             })
+            .addCase(doctorOtpVerificationAsync.pending, (state) => {
+                state.status = 'loading';
+                state.isPanding = true
+                state.isError = false
+                state.errorMessage = null
+            })
+            .addCase(doctorOtpVerificationAsync.rejected, (state, action) => {
+                state.isPanding = false
+                state.isError = true
+                state.errorMessage = action.payload
+                state.isDoctor = false
+            })
+            .addCase(doctorOtpVerificationAsync.fulfilled, (state, action) => {
+                state.status = 'idle';
+                state.isPanding = false
+                state.doctorData = action.payload
+                state.isError = false
+                state.errorMessage = null
+            })
             ;
     },
 });
@@ -299,5 +340,7 @@ export const doctorData = (state) => state.doctor.doctorData;
 export const getAllDoctors = (state) => state.doctor.allDoctors;
 export const doctorDashBoard = (state) => state.doctor.doctorDashBoard;
 export const patientProfile = (state) => state.doctor.patientProfileForDoctor;
+export const isDoctorError = (state) => state.doctor.isError;
+export const doctorErrorMessage = (state) => state.doctor.errorMessage;
 
 export default doctorSlice.reducer
