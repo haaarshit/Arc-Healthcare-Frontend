@@ -93,7 +93,11 @@ function Home() {
                                 </h2>
                                 <FilterDoctorByCityForm onSubmit={onSubmit} register={register} handleSubmit={handleSubmit} />
                                 <div className="flex flex-wrap justify-between px-2">
+                                    {
+                                     doctors &&    
                                     <DoctorCards doctors={doctors} />
+
+                                    }
                                 </div>
 
 
@@ -113,7 +117,7 @@ const DoctorCards = ({ doctors }) => {
 
 
             {
-                doctors && doctors?.map(doctor =>
+                doctors?.map(doctor =>
                     <>
                         <Card className="mx-2 my-2 w-full px-4 sm:w-[22vw] rounded-[10px] my-4 ">
                             <CardHeader color="blue-gray" className="relative ">
