@@ -114,8 +114,6 @@ function Home() {
 const DoctorCards = ({ doctors }) => {
     return (
         <>
-
-
             {
                 doctors?.map(doctor =>
                     <>
