@@ -10,7 +10,7 @@ const initialState = {
     isPanding: false,
     isError:false,
     errorMessage:null,
-    allDoctors: null
+    allDoctors: []
 };
 
 
