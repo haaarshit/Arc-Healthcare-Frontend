@@ -112,7 +112,7 @@ function Home() {
 const DoctorCards = ({ doctors }) => {
     return (
         <>
-            {
+            {doctors?.length > 0 ? (
                 doctors?.map(doctor =>
                     <>
                         <Card className="mx-2 my-2 w-full px-4 sm:w-[22vw] rounded-[10px] my-4 ">
@@ -141,6 +141,11 @@ const DoctorCards = ({ doctors }) => {
                             </CardFooter>
                         </Card>
                     </>
+                )
+            )
+                :
+                (
+                    <p>No doctors to display</p>
                 )
             }
         </>
