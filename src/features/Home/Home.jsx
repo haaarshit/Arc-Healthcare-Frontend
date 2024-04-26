@@ -94,7 +94,7 @@ function Home() {
                                 <FilterDoctorByCityForm onSubmit={onSubmit} register={register} handleSubmit={handleSubmit} />
                                 <div className="flex flex-wrap justify-between px-2">
                                     {doctors && doctors.length > 0 && (
-                                        <DoctorCards doctors={doctors} />
+                                        <DoctorCards  />
                                     )}
                                 </div>
 
@@ -109,7 +109,8 @@ function Home() {
     )
 }
 
-const DoctorCards = ({ doctors }) => {
+const DoctorCards = () => {
+    const doctors = useSelector(getAllDoctors)
     return (
         <>
             {doctors?.length > 0 ? (

@@ -180,7 +180,7 @@ function MyNavbar() {
                             </Link> */}
                         {!isDoctorLogin && !isPatientLogin ?
                             <div>
-                                <Link className=" p-2  hover:bg-[#7371fc]  rounded-full hover:text-white duration-200">
+                                <Link to='/patient/login' className=" p-2  hover:bg-[#7371fc]  rounded-full hover:text-white duration-200">
                                     Patient Login <LoginIcon />
                                 </Link>
                                 <Link to='/doctor/login' className=" p-2 hover:bg-[#7371fc]  rounded-full hover:text-white duration-200">
