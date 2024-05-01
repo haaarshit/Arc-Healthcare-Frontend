@@ -39,7 +39,6 @@ function App() {
           <Route path='/patient/register' element={<PatientRegister />} />
           <Route path='/patient/dashboard' element={<PatientDashBoard/>} />
         </Routes>
-
       </BrowserRouter>
     </div>
   );

@@ -128,9 +128,6 @@ export const doctorOtpVerificationAsync = createAsyncThunk(
     }
 );
 
-
-
-
 export const doctorSlice = createSlice({
     name: 'doctor',
     initialState,

@@ -314,8 +314,8 @@ const PersonalInfo = ({ register, errors }) => {
                         className={`shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''
                             }`}
                     />
-                    {errors.personalInfo && errors.personalInfo.firstName && (
-                        <span className="text-red-500 text-sm">{errors.personalInfo.firstName.message}</span>
+                    {errors?.personalInfo && errors?.personalInfo?.firstName && (
+                        <span className="text-red-500 text-sm">{errors?.personalInfo?.firstName?.message}</span>
                     )}
                 </div>
                 <div className='mb-4'>
@@ -326,8 +326,8 @@ const PersonalInfo = ({ register, errors }) => {
                         className={`shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''
                             }`}
                     />
-                    {errors.personalInfo && errors.personalInfo.lastName && (
-                        <span className="text-red-500 text-sm">{errors.personalInfo.lastName.message}</span>
+                    {errors?.personalInfo && errors?.personalInfo.lastName && (
+                        <span className="text-red-500 text-sm">{errors?.personalInfo?.lastName?.message}</span>
                     )}
                 </div>
             </div>
@@ -369,7 +369,7 @@ const PersonalInfo = ({ register, errors }) => {
                         }`}
                 />
                 {errors.personalInfo && errors.personalInfo.nationality && (
-                    <span className="text-red-500 text-sm">{errors.personalInfo.nationality.message}</span>
+                    <span className="text-red-500 text-sm">{errors?.personalInfo.nationality.message}</span>
                 )}
             </div>
             <h1 className="block text-gray-700 md:text-md text-xl font-bold mb-2">Address</h1>
@@ -378,8 +378,8 @@ const PersonalInfo = ({ register, errors }) => {
                     className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''
                         }`}
                 />
-                {errors.personalInfo && errors.personalInfo.address && errors.personalInfo.address.street && (
-                    <span className="text-red-500 text-sm">{errors.personalInfo.address.street.message}</span>
+                {errors?.personalInfo && errors?.personalInfo?.address && errors?.personalInfo?.address?.street && (
+                    <span className="text-red-500 text-sm">{errors?.personalInfo.address.street.message}</span>
                 )}
             </div>
             <div className='mb-4'>
@@ -387,8 +387,8 @@ const PersonalInfo = ({ register, errors }) => {
                     className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''
                         }`}
                 />
-                {errors.personalInfo && errors.personalInfo.address && errors.personalInfo.address.city && (
-                    <span className="text-red-500 text-sm">{errors.personalInfo.address.city.message}</span>
+                {errors?.personalInfo && errors?.personalInfo?.address && errors?.personalInfo?.address?.city && (
+                    <span className="text-red-500 text-sm">{errors?.personalInfo?.address?.city?.message}</span>
                 )}
             </div>
             <div className='mb-4'>
@@ -396,8 +396,8 @@ const PersonalInfo = ({ register, errors }) => {
                     className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''
                         }`}
                 />
-                {errors.personalInfo && errors.personalInfo.address && errors.personalInfo.address.state && (
-                    <span className="text-red-500 text-sm">{errors.personalInfo.address.state.message}</span>
+                {errors?.personalInfo && errors?.personalInfo?.address && errors?.personalInfo?.address?.state && (
+                    <span className="text-red-500 text-sm">{errors?.personalInfo?.address?.state?.message}</span>
                 )}
             </div>
             <div className='mb-4'>
@@ -405,8 +405,8 @@ const PersonalInfo = ({ register, errors }) => {
                     className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''
                         }`}
                 />
-                {errors.personalInfo && errors.personalInfo.address && errors.personalInfo.address.zipCode && (
-                    <span className="text-red-500 text-sm">{errors.personalInfo.address.zipCode.message}</span>
+                {errors?.personalInfo && errors?.personalInfo?.address && errors?.personalInfo?.address?.zipCode && (
+                    <span className="text-red-500 text-sm">{errors?.personalInfo?.address?.zipCode?.message}</span>
                 )}
             </div>
         </div>
